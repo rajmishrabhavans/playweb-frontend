@@ -1,18 +1,30 @@
 import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
+import {useFormik} from 'formik';
+import contactSchema from '../schemas/contactSchema';
 import appdata, {userInfo} from './appdata';
 
+
+let initValue= {
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+}
 const Contactus = () => {
-    const [userData, setUserData] = useState({
-        name: "your name",
-        email: "example@mail.com",
-        phone: "9876543210",
-        message: ""
-    });
-    const sendMessage = async (e) => {
-        e.preventDefault();
+    const {values,errors,touched,setFieldValue,handleChange,handleSubmit,handleBlur}= useFormik({
+        initialValues:initValue,
+        validationSchema:contactSchema,
+        onSubmit: (values,action)=>{
+            action.resetForm();
+            // console.log(values);
+            sendMessage();
+        }
+    })
+    // console.log(errors);
+    const sendMessage = async () => {
         try {
-            const {name,email,phone,message}= userData;
+            const {name,email,phone,message}= values;
             if(!name || !email || !phone || !message){
                 alert("Please fill all the details");
                 return;
@@ -34,7 +46,7 @@ const Contactus = () => {
             }
             // const data = await res.json();
             alert("Message sent successfully");
-            setUserData({...userData,message:""})
+            // values.message= "";
         } catch (error) {
             console.log(error);
         }
@@ -63,8 +75,10 @@ const Contactus = () => {
                 console.log("Unable to fetch user data");
             }else{
                 Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
-                // console.log(userInfo);
-                setUserData({...userData, name:data.name,email:data.email,phone:data.phone});
+                
+                setFieldValue('name',userInfo.name)
+                setFieldValue('email',userInfo.email)
+                setFieldValue('phone',userInfo.phone)
             }
         } catch (error) {
             console.log(error);
@@ -76,80 +90,73 @@ const Contactus = () => {
         if(!userInfo.creationdate){
             loadContactPage();
         }else{
-            setUserData({...userData, name:userInfo.name,email:userInfo.email,phone:userInfo.phone});
+            
+        setFieldValue('name',userInfo.name)
+        setFieldValue('email',userInfo.email)
+        setFieldValue('phone',userInfo.phone)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    //store message in DB
-    const handleInputs =(e)=>{
-        const name= e.target.name;
-        const value= e.target.value;
-        setUserData({...userData,[name]:value})
-    }
-
   return (
     <>
-      
-    <section className="vh-100" style={{backgroundColor: '#eee'}}>
-        <div className="container h-100 ">
-            <div className="row d-flex justify-content-center align-items-center h-100 ">
-                <div className="col-lg-12 col-xl-11">
-                    <div className="card text-black register-form" style={{borderRadius: '25px'}}>
-                        <div className="card-body p-md-5">
-                            <div className="row justify-content-center">
-                                <div className="col-md-11 col-lg-9 col-xl-7 order-2 order-lg-1">
+        <div className="card-body p-md-5">
+            <div className="row justify-content-center">
+                <div className="col-md-11 col-lg-9 col-xl-7 order-2 order-lg-1">
 
-                                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Contact us</p>
+                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Contact us</p>
 
-                                    <form method="POST" className="mx-1 mx-md-4">
+                    <form onSubmit={handleSubmit} method="POST" className="mx-1 mx-md-4">
 
-                                        <div className="d-flex flex-row align-items-center mb-4">
-                                            <i className="fas fa-user fa-lg me-3 fa-fw"></i>
-                                            <div className="form-outline flex-fill mb-0">
-                                                <input type="text" name="name" className="form-control fw-bold"
-                                                    onChange={handleInputs} value={userData.name} placeholder="Full Name" required/>
-                                            </div>
-                                        </div>
-
-                                        <div className="d-flex flex-row align-items-center mb-4">
-                                            <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                                            <div className="form-outline flex-fill mb-0">
-                                                <input type="email" name="email" className="form-control fw-bold"
-                                                    onChange={handleInputs} value={userData.email} placeholder="Your Email" required/>
-                                            </div>
-                                        </div>
-
-                                        <div className="d-flex flex-row align-items-center mb-4">
-                                            <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
-                                            <div className="form-outline flex-fill mb-0">
-                                                <input type="number" name="phone" className="form-control fw-bold"
-                                                    onChange={handleInputs} value={userData.phone} placeholder="Mobile number" required/>
-                                            </div>
-                                        </div>
-
-                                        <div className="d-flex flex-row align-items-center mb-4">
-                                            <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
-                                            <div className="form-outline flex-fill mb-0">
-                                                <textarea rows='3' type="text" name="message" className="form-control"
-                                                    onChange={handleInputs} value={userData.message} placeholder="Message" required/>
-                                            </div>
-                                        </div>
-
-                                        <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <button type="submit" onClick={sendMessage} className="btn btn-primary btn-lg">Submit</button>
-                                        </div>
-
-                                    </form>
-
-                                </div>
+                        <div className="d-flex flex-row align-items-center mb-1">
+                            <i className="fas fa-user fa-lg me-3 fa-fw"></i>
+                            <div className="form-outline flex-fill mb-0">
+                                <input type="text" name="name" className="form-control fw-bold"
+                                    onBlur={handleBlur} onChange={handleChange} value={values.name} placeholder="Full Name" required/>
                             </div>
                         </div>
-                    </div>
+                        <p className='ms-4 mt-1 mb-4 text-danger' >{errors.name && touched.name ? errors.name:""}</p>
+
+
+                        <div className="d-flex flex-row align-items-center mb-1">
+                            <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                            <div className="form-outline flex-fill mb-0">
+                                <input type="email" name="email" className="form-control fw-bold"
+                                    onBlur={handleBlur} onChange={handleChange} value={values.email} placeholder="Your Email" required/>
+                            </div>
+                        </div>
+                        <p className='ms-4 mt-1 mb-4 text-danger' >{errors.email && touched.email ? errors.email:""}</p>
+
+
+                        <div className="d-flex flex-row align-items-center mb-1">
+                            <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
+                            <div className="form-outline flex-fill mb-0">
+                                <input type="number" name="phone" className="form-control fw-bold"
+                                    onBlur={handleBlur} onChange={handleChange} value={values.phone} placeholder="Mobile number" required/>
+                            </div>
+                        </div>
+                        <p className='ms-4 mt-1 mb-4 text-danger' >{errors.phone && touched.phone ? errors.phone:""}</p>
+
+
+                        <div className="d-flex flex-row align-items-center mb-1">
+                            <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
+                            <div className="form-outline flex-fill mb-0">
+                                <textarea rows='3' type="text" name="message" className="form-control"
+                                    onBlur={handleBlur} onChange={handleChange} value={values.message} placeholder="Message" required/>
+                            </div>
+                        </div>
+                        <p className='ms-4 mt-1 mb-4 text-danger' >{errors.message && touched.message ? errors.message:""}</p>
+
+
+                        <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                            <button type="submit" className="btn btn-primary btn-lg">Submit</button>
+                        </div>
+
+                    </form>
+
                 </div>
             </div>
         </div>
-    </section>
     </>
   )
 }

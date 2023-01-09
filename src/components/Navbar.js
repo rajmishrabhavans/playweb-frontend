@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 import logoImg from '../images/house-water-32.png'
 import { userContext } from '../App'
-import { NavLink,useNavigate } from 'react-router-dom'
+import { Link, NavLink,useNavigate } from 'react-router-dom'
 import appdata, {userInfo} from './appdata'
 import Cookies from 'js-cookie'
-// import('bootstrap/dist/css/bootstrap.min.css');
 
+let spinner= document.getElementById('play-spinner');
 const Navbar = () => {
     const {state,dispatch} = useContext(userContext);
     const navigate= useNavigate({});
@@ -35,6 +35,7 @@ const Navbar = () => {
         }
     }
     useEffect(() => {
+      spinner= document.getElementById('play-spinner');
       loadNavbar();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -49,6 +50,7 @@ const Navbar = () => {
       }, [Cookies.get()])
     
     const logoutUser=async()=> {
+        spinner.classList.remove('d-none');
         try {
             const res= await fetch(appdata.baseUrl+"/logout",{
                 method:"POST",
@@ -79,8 +81,11 @@ const Navbar = () => {
             // console.log(data);
         } catch (error) {
             console.log(error);
+        }finally{
+            spinner.classList.add('d-none');
         }
     }
+
     const LoginTab=()=> {
       return (
         <>
@@ -100,7 +105,7 @@ const Navbar = () => {
             <NavLink className="nav-link" to="/profile">Profile</NavLink>
         </li>
         <li className="nav-item">
-            <NavLink className="nav-link cursor-pointer" to="/login" onClick={logoutUser} >Logout</NavLink>
+            <Link className="nav-link cursor-pointer" onClick={logoutUser} >Logout</Link>
         </li>
         </>
       )

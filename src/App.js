@@ -10,6 +10,7 @@ import Profile from './components/Profile';
 import {Routes, Route} from "react-router-dom";
 import ErrorPage from './components/ErrorPage';
 import { reducer,initialState } from './reducer/UseReducer';
+import BackPage from './components/BackPage';
 
 export const userContext = createContext();
 function App() {
@@ -19,12 +20,12 @@ function App() {
     <userContext.Provider value= {{state,dispatch}}>
       <Navbar/>
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contactus />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route exact path="/" element={<BackPage Element= {Home}/>} />
+        <Route path="/about" element={<BackPage Element= {About}/>} />
+        <Route path="/contact" element={<BackPage Element= {Contactus}/>} />
+        <Route path="/login" element={<BackPage Element= {Login}/>} />
+        <Route path="/register" element={<BackPage Element= {Register}/>} />
+        <Route path="/profile" element={<BackPage Element= {Profile}/>} />
         <Route path="/*" element={<ErrorPage/>} />
       </Routes>
       </userContext.Provider>
