@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useState,useEffect } from 'react'
 import appdata, {userInfo} from './appdata';
 
+let loadcomp= document.querySelectorAll('.glowme');
 const Home = () => {
     const[userData,setUserData]= useState({
         name:"Have Fun With Web",
@@ -9,6 +10,7 @@ const Home = () => {
     });
     console.log(userData);
     const loadHomePage =async()=>{
+        loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
         try {
             // console.log(Cookies.get('jwtoken'));
             const res= await fetch(appdata.baseUrl+"/getData",{
@@ -35,9 +37,12 @@ const Home = () => {
             }
         } catch (error) {
             console.log(error);
+        }finally{
+            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');})
         }
     }
     useEffect(() => {
+        loadcomp= document.querySelectorAll('.glowme');
         console.log(userInfo.name,userData.name)
         if(!userInfo.creationdate){
             loadHomePage();
@@ -51,11 +56,13 @@ const Home = () => {
     <>
             <div className="card-body p-md-5">
                 <div className="row justify-content-center">
-                    <div className="col-md-11 col-lg-9 col-xl-7 order-2 order-lg-1">
+                    <div className="col-md-11 col-lg-9 col-xl-7 order-2 order-lg-1 ">
 
                         <p className="text-center ">Welcome</p>
-                        <p className="text-center h1 fw-bold mt-3 mb-2">{userData.name}</p>
-                        <p className="text-center ">{userData.info}</p>
+                        <div className="placeholder-glow d-flex justify-content-center flex-column">
+                        <p className="glowme text-center h1 fw-bold mt-3 mb-2 align-self-center col-11">{userData.name}</p>
+                        <p className="glowme text-center align-self-center col-5">{userData.info}</p>
+                        </div>
 
                     </div>
                 </div>

@@ -27,8 +27,8 @@ const Login = () => {
     })
     // console.log(errors);
     const submitUserData =async()=>{
-        spinner.classList.remove('d-none');
         try {
+        spinner.classList.remove('d-none');
         const {email,password}= values;
         if(!email || !password){
             alert("Please fill all the details");
