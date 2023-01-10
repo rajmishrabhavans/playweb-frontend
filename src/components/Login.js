@@ -1,6 +1,5 @@
-import {React,useContext, useEffect} from 'react'
+import {React, useEffect} from 'react'
 import {NavLink,useNavigate} from 'react-router-dom'
-import { userContext } from '../App';
 import appdata,{userInfo} from './appdata';
 import Cookies from 'js-cookie';
 import {useFormik} from 'formik';
@@ -10,7 +9,6 @@ const buildingImg= require('../images/building.png');
 let spinner= document.getElementById('play-spinner');
 const Login = () => {
     //eslint-disable-next-line
-    const {state,dispatch} = useContext(userContext);
     const navigate= useNavigate();
     const initValue= {
         email:"",
@@ -48,10 +46,14 @@ const Login = () => {
 
         // console.log(res.status,data);
         if(res.status>201 || !data){
-            alert("Invalid Entry!");
-            console.log("Invalid Entry!");
+            if(data && data.error==='Incorrect password'){
+                alert("Incorrect password")
+            }else{
+                alert("Invalid Entry!");
+            }
+            console.log("Failed to login!");
         }else{
-            dispatch({type:"USER",payload:true});
+            sessionStorage.setItem('loggedin','true')
             alert("Login Sucessfull");
             Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
             // console.log(userInfo);

@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react'
+import React, { createContext } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
@@ -9,15 +9,12 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import {Routes, Route} from "react-router-dom";
 import ErrorPage from './components/ErrorPage';
-import { reducer,initialState } from './reducer/UseReducer';
 import BackPage from './components/BackPage';
 
 export const userContext = createContext();
 function App() {
-  const [state,dispatch]= useReducer(reducer,initialState);
   return (
     <>
-    <userContext.Provider value= {{state,dispatch}}>
       <Navbar/>
       <Routes>
         <Route exact path="/" element={<BackPage Element= {Home}/>} />
@@ -28,7 +25,6 @@ function App() {
         <Route path="/profile" element={<BackPage Element= {Profile}/>} />
         <Route path="/*" element={<ErrorPage/>} />
       </Routes>
-      </userContext.Provider>
     </>
   )
 }

@@ -16,11 +16,35 @@ const Register = () => {
         password:"",
         cpassword:""
     }
+    const checkExistingUser= async(values)=>{
+        const {email,phone}= values;
+        let errors= {};
+        const res = await fetch(appdata.baseUrl+"/checkUser",{
+            method: "POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                email,phone
+            })
+        });
+        const data= await res.json();
+        if(data.error){
+            if(data.error==='email'){
+                errors.email= 'Email already exists'
+            }
+            if(data.error==='phone'){
+                errors.phone='Phone already exists'
+            }
+            return errors;
+        }
+    }
     const {values,errors,touched,handleChange,handleSubmit,handleBlur}= useFormik({
         initialValues:initValue,
         validationSchema:registerSchema,
+        validate:checkExistingUser,
         onSubmit: (values,action)=>{
-            action.resetForm();
+            // action.resetForm();
             // console.log(values);
             submitUserData();
         }
@@ -44,9 +68,15 @@ const Register = () => {
                 })
             });
             const data= await res.json();
-            if(data.status===(422) || !data){
-                alert("Invalid Entry!");
-                console.log("Invalid Entry!");
+            if(res.status===(422) || !data){
+                if(data.error==='email'){
+                    alert('Email already exists');
+                }else if(data.error==='phone'){
+                    alert('Phone already exists');
+                }else{
+                    alert("Failed to register!");
+                }
+                console.log("Failed to register!");
             }else{
                 alert("Registration Sucessfull");
                 console.log("Registration Sucessfull");

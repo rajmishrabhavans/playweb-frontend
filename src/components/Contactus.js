@@ -4,7 +4,7 @@ import {useFormik} from 'formik';
 import contactSchema from '../schemas/contactSchema';
 import appdata, {userInfo} from './appdata';
 
-
+let loadcomp= document.querySelectorAll('.glowme');
 let initValue= {
     name: "",
     email: "",
@@ -53,8 +53,9 @@ const Contactus = () => {
     }
 
     const loadContactPage = async () => {
-
+        console.log("contact load");
         try {
+            loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
             const res = await fetch(appdata.baseUrl+"/getdata", {
                 method: "POST",
                 headers: {
@@ -82,12 +83,15 @@ const Contactus = () => {
             }
         } catch (error) {
             console.log(error);
+        }finally{
+            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');});
         }
     }
     // console.log(userData);
 
     useEffect(() => {
-        if(!userInfo.creationdate){
+        loadcomp= document.querySelectorAll('.glowme');
+        if(!userInfo.creationdate && sessionStorage.getItem('loggedin')){
             loadContactPage();
         }else{
             
@@ -110,8 +114,8 @@ const Contactus = () => {
 
                         <div className="d-flex flex-row align-items-center mb-1">
                             <i className="fas fa-user fa-lg me-3 fa-fw"></i>
-                            <div className="form-outline flex-fill mb-0">
-                                <input type="text" name="name" className="form-control fw-bold"
+                            <div className="placeholder-glow form-outline flex-fill mb-0">
+                                <input type="text" name="name" className="glowme form-control fw-bold"
                                     onBlur={handleBlur} onChange={handleChange} value={values.name} placeholder="Full Name" required/>
                             </div>
                         </div>
@@ -120,8 +124,8 @@ const Contactus = () => {
 
                         <div className="d-flex flex-row align-items-center mb-1">
                             <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                            <div className="form-outline flex-fill mb-0">
-                                <input type="email" name="email" className="form-control fw-bold"
+                            <div className="placeholder-glow form-outline flex-fill mb-0">
+                                <input type="email" name="email" className="glowme form-control fw-bold"
                                     onBlur={handleBlur} onChange={handleChange} value={values.email} placeholder="Your Email" required/>
                             </div>
                         </div>
@@ -130,8 +134,8 @@ const Contactus = () => {
 
                         <div className="d-flex flex-row align-items-center mb-1">
                             <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
-                            <div className="form-outline flex-fill mb-0">
-                                <input type="number" name="phone" className="form-control fw-bold"
+                            <div className="placeholder-glow form-outline flex-fill mb-0">
+                                <input type="number" name="phone" className="glowme form-control fw-bold"
                                     onBlur={handleBlur} onChange={handleChange} value={values.phone} placeholder="Mobile number" required/>
                             </div>
                         </div>
@@ -140,8 +144,8 @@ const Contactus = () => {
 
                         <div className="d-flex flex-row align-items-center mb-1">
                             <i className="fas fa-mobile fa-lg me-3 fa-fw"></i>
-                            <div className="form-outline flex-fill mb-0">
-                                <textarea rows='3' type="text" name="message" className="form-control"
+                            <div className="placeholder-glow form-outline flex-fill mb-0">
+                                <textarea rows='3' type="text" name="message" className="glowme form-control fw-bold"
                                     onBlur={handleBlur} onChange={handleChange} value={values.message} placeholder="Message" required/>
                             </div>
                         </div>

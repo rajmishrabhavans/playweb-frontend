@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect} from 'react'
 import appdata, {userInfo} from './appdata';
 
 let loadcomp= document.querySelectorAll('.glowme');
@@ -8,10 +8,9 @@ const Home = () => {
         name:"Have Fun With Web",
         info:""
     });
-    console.log(userData);
     const loadHomePage =async()=>{
-        loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
         try {
+            loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
             // console.log(Cookies.get('jwtoken'));
             const res= await fetch(appdata.baseUrl+"/getData",{
                 method:"POST",
@@ -30,26 +29,26 @@ const Home = () => {
             // console.log(userInfo);
             setUserData({...userData,name:data.name,info:"happy to see you back"});
             if(data.error){
-                setUserData({
-                    name:"Have Fun With Web",
-                    info:""
-                });
+                console.log("cannot load data!");
             }
         } catch (error) {
             console.log(error);
         }finally{
-            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');})
+            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');});
         }
     }
     useEffect(() => {
         loadcomp= document.querySelectorAll('.glowme');
-        console.log(userInfo.name,userData.name)
-        if(!userInfo.creationdate){
+        // console.log(userInfo.creationdate)
+        if(sessionStorage.getItem('loggedin') && !userInfo.creationdate){
             loadHomePage();
-        }else{
+        }else if(!sessionStorage.getItem('loggedin')){
+            setUserData({...userData,name:"Have Fun With Web",info:""});
+        }
+        else{
             setUserData({...userData,name:userInfo.name,info:"happy to see you back"});
         }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    //   eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
   return (

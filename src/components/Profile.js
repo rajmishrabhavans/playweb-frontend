@@ -6,7 +6,7 @@ const imgPath = require('../images/avatar3.png');
 
 let about = document.getElementById('aboutProfile');
 let timeline = document.getElementById('temelineProfile');
-
+let loadcomp= document.querySelectorAll('.glowme');
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -16,6 +16,7 @@ const Profile = () => {
     const loadProfilePage = async () => {
 
         try {
+            loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
             const res = await fetch(appdata.baseUrl+"/getdata", {
                 method: "POST",
                 headers: {
@@ -39,6 +40,8 @@ const Profile = () => {
             setUserData(data);
         } catch (error) {
             console.log(error);
+        }finally{
+            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');})
         }
     }
 
@@ -55,9 +58,9 @@ const Profile = () => {
         }
     }
     useEffect(() => {
-        
         about = document.getElementById('aboutProfile');
         timeline = document.getElementById('timelineProfile');
+        loadcomp= document.querySelectorAll('.glowme');
         if(!userInfo.creationdate){
             loadProfilePage();
         }else{
@@ -71,31 +74,31 @@ const Profile = () => {
     const ProfileSection = () => {
         return (
             <>
-                <div className="d-flex flex-column mt-4 profileSection">
-                    { }
+                <div className="placeholder-glow d-flex flex-column mt-4 profileSection">
+                    
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">UserId : </span>
-                        <span className="col-xs-11 col-sm-7">{userData._id}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData._id}</span>
                     </div>
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">Name : </span>
-                        <span className="col-xs-11 col-sm-7">{userData.name}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData.name}</span>
                     </div>
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">Gender : </span>
-                        <span className="col-xs-11 col-sm-7">{userData.gender}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData.gender}</span>
                     </div>
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">Email : </span>
-                        <span className="col-xs-11 col-sm-7">{userData.email}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData.email}</span>
                     </div>
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">Phone : </span>
-                        <span className="col-xs-11 col-sm-7">{userData.phone}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData.phone}</span>
                     </div>
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">Date of creation : </span>
-                        <span className="col-xs-11 col-sm-7">{userData.creationdate}</span>
+                        <span className="glowme col-xs-11 col-sm-7">{userData.creationdate}</span>
                     </div>
                 </div>
 
@@ -158,10 +161,12 @@ const Profile = () => {
                         </div>
                         <div className="col-sm-10 col-md-8 d-flex flex-column order-2 mt-4" >
                             <div className="col-md-10 col-lg-4 col-xl-3 order-1 d-flex w-100 justify-content-between">
-                                <div>
-                                    <div className='text_bold'>{userData.name}</div>
-                                    <div className='text-primary'>Work Profession</div>
-                                    <div className='text-secondry'>Other info</div>
+                                <div className='placeholder-glow' >
+                                    <div className='glowme text_bold'>{userData.name}</div>
+                                    <div className="w-100"></div>
+                                    <div className='glowme text-primary'>Work Profession</div>
+                                    <div className="w-100"></div>
+                                    <div className='glowme text-secondry'>Other info</div>
                                 </div>
                                 <div>
                                     <button type="button" className="btn btn-light">Edit Profile</button>

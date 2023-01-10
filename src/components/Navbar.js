@@ -1,13 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, {  useEffect } from 'react'
 import logoImg from '../images/house-water-32.png'
-import { userContext } from '../App'
 import { Link, NavLink,useNavigate } from 'react-router-dom'
 import appdata, {userInfo} from './appdata'
 import Cookies from 'js-cookie'
 
 let spinner= document.getElementById('play-spinner');
 const Navbar = () => {
-    const {state,dispatch} = useContext(userContext);
     const navigate= useNavigate({});
     // const [isAuthenticated,setIsAuthenticated]= useState(false);
     const loadNavbar =async()=>{
@@ -22,14 +20,16 @@ const Navbar = () => {
                 })
             });
             if(res.status!==200){
-                // setIsAuthenticated(false);
-                dispatch({type:"USER",payload:false});
                 // console.log("State: ",state);
+                if(!Cookies.get('jwtoken')){
+                    sessionStorage.removeItem('loggedin')
+                }
                 throw new Error(res.Error);
             }
-                // setIsAuthenticated(true);
-                dispatch({type:"USER",payload:true});
-                console.log("State: ",state);
+            if(!sessionStorage.getItem('loggedin')){
+                sessionStorage.setItem('loggedin','true')
+            }
+                // console.log("State: ",state);
         } catch (error) {
             // console.log(error);
         }
@@ -40,14 +40,6 @@ const Navbar = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
-    useEffect(() => {
-        if(!Cookies.get('jwtoken')){
-            dispatch({type:"USER",payload:false});
-        }else{
-            dispatch({type:"USER",payload:true});
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [Cookies.get()])
     
     const logoutUser=async()=> {
         spinner.classList.remove('d-none');
@@ -74,9 +66,9 @@ const Navbar = () => {
                 gender:"male",
                 creationdate:""
             }
+            sessionStorage.removeItem('loggedin')
             Object.entries(placholder).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
             // console.log(userInfo);
-            dispatch({type:"USER",payload:false});
             navigate("/login");
             // console.log(data);
         } catch (error) {
@@ -98,6 +90,14 @@ const Navbar = () => {
         </>
       )
     }
+
+    // useEffect(() => {
+    //     if(!Cookies.get('jwtoken')){
+    //         dispatch({type:"USER",payload:false});
+    //     }else{
+    //         dispatch({type:"USER",payload:true});
+    //     }
+    //   }, [Cookies.get()])
     const LogoutTab=()=> {
       return (
         <>
@@ -133,7 +133,7 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/contact">Contact</NavLink>
                             </li>
-                            {state?<LogoutTab/>:<LoginTab/>}
+                            {sessionStorage.getItem('loggedin')?<LogoutTab/>:<LoginTab/>}
                         </ul>
                     </div>
                 </div>
