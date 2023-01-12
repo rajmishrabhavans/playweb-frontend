@@ -2,6 +2,7 @@ import React from 'react'
 
 const imgPath = require('../images/avatar1.png');
 
+// About us tab
 const About = () => {
   return (
     <>

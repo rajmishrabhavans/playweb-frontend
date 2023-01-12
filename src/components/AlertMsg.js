@@ -1,28 +1,82 @@
 import React from 'react'
 
-
-export const showAlert = (alertbox,alertmsg,message) => {
-  alertbox.classList.remove('d-none');
-  alertmsg.innerText = message;
+let modalbtn,modalalertmsg,simplealertmsg;
+// loads the alerts before using modal and simple alerts
+export const loadAlerts=()=>{
+  modalbtn = document.getElementById('showModal');
+  modalalertmsg= document.getElementById('modalalertmsg');
+  simplealertmsg= document.getElementById('simplealertmsg');
 }
-export const closeAlert = () => {
-  let alertbox= document.getElementById('alertmsg');
-  alertbox.classList.add('d-none');
+
+const convertColor = (color) =>{
+  switch(color){
+    case 'red': return 'danger';
+    case 'blue': return 'primary';
+    case 'yellow': return 'warning';
+    case 'green': return 'success';
+    case 'lightblue': return 'info';
+    case 'black': return 'dark';
+    case 'grey': return 'secondary';
+    default: return color;
+  }
+}
+
+// shows simple allert message at the top
+export const showSimpleAlert=(msg,bgcolor= 'success')=>{
+  const lightbg = ['warning','light','white','info'];
+  const availableColors = ['warning','light','white','info','danger','primary','success','dark','secondary']
+  const extraColor = ['red','blue','green','black','grey','yellow','lightblue']
+
+  if(extraColor.includes(bgcolor)){
+    bgcolor= convertColor(bgcolor);
+  }else if(!availableColors.includes(bgcolor)){
+    bgcolor= 'success';
+  }
+
+  if(lightbg.includes(bgcolor)){
+    simplealertmsg.classList.add('text-dark');
+  }else{
+    simplealertmsg.classList.add('text-white');
+  }
+  const msgBgColor = 'bg-'+bgcolor;
+  simplealertmsg.innerText = msg;
+  simplealertmsg.classList.remove('d-none');
+  simplealertmsg.classList.add(msgBgColor);
+  setTimeout(() => {
+      simplealertmsg.classList.add('d-none');
+      simplealertmsg.classList.remove(msgBgColor);
+      simplealertmsg.classList.remove('text-dark');
+      simplealertmsg.classList.remove('text-white');
+  }, 5000);
+}
+
+export const showModalAlert=(msg)=>{
+  modalalertmsg.innerText = msg;
+  modalbtn.click();
 }
 
 const AlertMsg = () => {
   return (
     <>
-        <div id='alertbox' className="d-flex justify-content-center rounded-4 bg-secondary bg-opacity-25 position-absolute w-100 h-100 d-none" style={{zIndex:1}}>
-        <div className="position-absolute top-50 start-80" style={{width: '18rem', height: '3rem',zIndex:1}} role="status">
-        <div className="card border-secondary" style={{width: '18rem'}}>
-        <div className="card-body text-center">
-          <h5 className="card-title pb-2 text-secondary" id="alertmsg">Message Sent</h5>
-          <button className="btn btn-secondary" onClick={closeAlert} id= "alertbtn">Close</button>
+      <button type="button" id='showModal' data-bs-toggle="modal" data-bs-target="#modalalert" className="d-none"></button>
+
+      <div id='simplealertmsg' className="alert alert-success position-fixed top-10 start-50 translate-middle d-none" style={{zIndex:1}} role="alert">
+        A simple success alert—check it out!
+      </div>
+
+      <div className="modal fade" id="modalalert" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="modalalertmsg">Modal title</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
       </div>
-        </div>
-        </div>
     </>
   )
 }

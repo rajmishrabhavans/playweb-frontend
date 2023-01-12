@@ -4,9 +4,10 @@ import appdata,{userInfo} from './appdata';
 import Cookies from 'js-cookie';
 import {useFormik} from 'formik';
 import loginSchema from '../schemas/loginSchema';
+import {loadAlerts,showModalAlert,showSimpleAlert} from './AlertMsg';
+import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 const buildingImg= require('../images/building.png');
 
-let spinner= document.getElementById('play-spinner');
 const Login = () => {
     //eslint-disable-next-line
     const navigate= useNavigate();
@@ -26,7 +27,7 @@ const Login = () => {
     // console.log(errors);
     const submitUserData =async()=>{
         try {
-        spinner.classList.remove('d-none');
+            startSpinner();
         const {email,password}= values;
         if(!email || !password){
             alert("Please fill all the details");
@@ -47,17 +48,17 @@ const Login = () => {
         // console.log(res.status,data);
         if(res.status>201 || !data){
             if(data && data.error==='Incorrect password'){
-                alert("Incorrect password")
+                showModalAlert("Incorrect password");
             }else{
-                alert("Invalid Entry!");
+                showModalAlert("Invalid credentials");
             }
             console.log("Failed to login!");
         }else{
             sessionStorage.setItem('loggedin','true')
-            alert("Login Sucessfull");
+            showSimpleAlert("Login Successful");
             Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
             // console.log(userInfo);
-            console.log("Login Sucessfull");
+            console.log("Login Successful");
             const token= Cookies.get('jwtoken');
             if(!token){
                 Cookies.set('jwtoken',data.token);
@@ -68,11 +69,12 @@ const Login = () => {
         } catch (error) {
             console.log(error);
         }finally{
-            spinner.classList.add('d-none');
+            stopSpinner();
         }
     }
     useEffect(()=>{
-        spinner= document.getElementById('play-spinner');
+        loadSpinner();
+        loadAlerts();
     },[])
   return (
     <>
@@ -93,7 +95,6 @@ const Login = () => {
                         </div>
                         <p className='ms-4 mt-1 mb-4 text-danger' >{errors.email && touched.email ? errors.email:""}</p>
 
-
                         <div className="d-flex flex-row align-items-center mb-1">
                             <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                             <div className="form-outline flex-fill mb-0">
@@ -103,7 +104,6 @@ const Login = () => {
                         </div>
                         <p className='ms-4 mt-1 mb-4 text-danger' >{errors.password && touched.password ? errors.password:""}</p>
 
-
                         <div className="d-flex flex-row justify-content-center mb-4">
                             <div className="">
                                 Don't have an account? <NavLink to="/register">Apply here</NavLink>
@@ -111,7 +111,7 @@ const Login = () => {
                         </div>
 
                         <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                            <button type="submit" className="btn btn-primary btn-lg">Login</button>
+                        <button type="submit" className="btn btn-primary btn-lg">Login</button>
                         </div>
 
                     </form>

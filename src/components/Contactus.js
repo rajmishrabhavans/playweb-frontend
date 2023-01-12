@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect} from 'react'
 import {useFormik} from 'formik';
 import contactSchema from '../schemas/contactSchema';
+import {loadAlerts,showModalAlert} from './AlertMsg';
 import appdata, {userInfo} from './appdata';
 
 let loadcomp= document.querySelectorAll('.glowme');
@@ -45,7 +46,7 @@ const Contactus = () => {
                 throw new Error(res.error);
             }
             // const data = await res.json();
-            alert("Message sent successfully");
+            showModalAlert("Message sent successfully");
             // values.message= "";
         } catch (error) {
             console.log(error);
@@ -90,6 +91,7 @@ const Contactus = () => {
     // console.log(userData);
 
     useEffect(() => {
+        loadAlerts();
         loadcomp= document.querySelectorAll('.glowme');
         if(!userInfo.creationdate && sessionStorage.getItem('loggedin')){
             loadContactPage();

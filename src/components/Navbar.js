@@ -3,8 +3,9 @@ import logoImg from '../images/house-water-32.png'
 import { Link, NavLink,useNavigate } from 'react-router-dom'
 import appdata, {userInfo} from './appdata'
 import Cookies from 'js-cookie'
+import {loadAlerts,showModalAlert} from './AlertMsg';
+import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 
-let spinner= document.getElementById('play-spinner');
 const Navbar = () => {
     const navigate= useNavigate({});
     // const [isAuthenticated,setIsAuthenticated]= useState(false);
@@ -35,14 +36,15 @@ const Navbar = () => {
         }
     }
     useEffect(() => {
-      spinner= document.getElementById('play-spinner');
+      loadSpinner();
+      loadAlerts();
       loadNavbar();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
     
     const logoutUser=async()=> {
-        spinner.classList.remove('d-none');
+        startSpinner();
         try {
             const res= await fetch(appdata.baseUrl+"/logout",{
                 method:"POST",
@@ -74,7 +76,8 @@ const Navbar = () => {
         } catch (error) {
             console.log(error);
         }finally{
-            spinner.classList.add('d-none');
+            stopSpinner();
+            showModalAlert("You have been logged out!");
         }
     }
 
@@ -91,16 +94,12 @@ const Navbar = () => {
       )
     }
 
-    // useEffect(() => {
-    //     if(!Cookies.get('jwtoken')){
-    //         dispatch({type:"USER",payload:false});
-    //     }else{
-    //         dispatch({type:"USER",payload:true});
-    //     }
-    //   }, [Cookies.get()])
     const LogoutTab=()=> {
       return (
         <>
+        <li className="nav-item">
+            <NavLink className="nav-link" to="/contact">Contact</NavLink>
+        </li>
         <li className="nav-item">
             <NavLink className="nav-link" to="/profile">Profile</NavLink>
         </li>
@@ -129,9 +128,6 @@ const Navbar = () => {
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/about">About</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/contact">Contact</NavLink>
                             </li>
                             {sessionStorage.getItem('loggedin')?<LogoutTab/>:<LoginTab/>}
                         </ul>

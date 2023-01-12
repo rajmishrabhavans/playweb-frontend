@@ -10,12 +10,14 @@ import Profile from './components/Profile';
 import {Routes, Route} from "react-router-dom";
 import ErrorPage from './components/ErrorPage';
 import BackPage from './components/BackPage';
+import AlertMsg from './components/AlertMsg';
 
 export const userContext = createContext();
 function App() {
   return (
     <>
       <Navbar/>
+      <AlertMsg/>
       <Routes>
         <Route exact path="/" element={<BackPage Element= {Home}/>} />
         <Route path="/about" element={<BackPage Element= {About}/>} />

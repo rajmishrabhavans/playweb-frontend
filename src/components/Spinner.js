@@ -1,5 +1,15 @@
 import React from 'react'
 
+let spinner;
+export const loadSpinner = () =>{
+  spinner= document.getElementById('play-spinner');
+}
+export const startSpinner = () =>{
+  spinner.classList.remove('d-none');
+}
+export const stopSpinner = () =>{
+  spinner.classList.add('d-none');
+}
 const Spinner = () => {
   return (
     <>
