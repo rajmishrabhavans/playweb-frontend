@@ -1,7 +1,7 @@
 const { userInfo } = require("../components/appdata");
 const Cookies = require('js-cookie');
 
-exports.getUserData =async(appdata)=>{
+export const getUserData =async(appdata)=>{
     // console.log(Cookies.get());
     try {
         // console.log(appdata);
@@ -26,7 +26,7 @@ exports.getUserData =async(appdata)=>{
 }
 
 
-exports.logoutUser= async(appdata)=> {
+export const logoutUser= async(appdata)=> {
     try {
         console.log(appdata);
         const res= await fetch(appdata.baseUrl+"/logout",{
