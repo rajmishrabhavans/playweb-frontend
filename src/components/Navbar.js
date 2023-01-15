@@ -1,10 +1,11 @@
 import React, {  useEffect } from 'react'
 import logoImg from '../images/house-water-32.png'
 import { Link, NavLink,useNavigate } from 'react-router-dom'
-import appdata, {userInfo} from './appdata'
+import appdata from './appdata'
 import Cookies from 'js-cookie'
 import {loadAlerts,showModalAlert} from './AlertMsg';
 import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
+import { logoutUser } from '../utility/user'
 
 const Navbar = () => {
     const navigate= useNavigate({});
@@ -43,42 +44,14 @@ const Navbar = () => {
     }, [])
     
     
-    const logoutUser=async()=> {
+    const signoutUser=async()=> {
         startSpinner();
-        try {
-            const res= await fetch(appdata.baseUrl+"/logout",{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json" 
-                },
-                body:JSON.stringify({
-                    cookie:Cookies.get('jwtoken')
-                })
-            });
-            if(res.status!==200){
-                throw new Error(res.Error);
-            }
-            // setIsAuthenticated(false);
-            Cookies.remove('jwtoken',{path:''});
-            const placholder = {
-                _id:"295179",
-                name:"your name",
-                email:"example@mail.co",
-                phone:"9876543210",
-                gender:"male",
-                creationdate:""
-            }
-            sessionStorage.removeItem('loggedin')
-            Object.entries(placholder).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
-            // console.log(userInfo);
-            navigate("/login");
-            // console.log(data);
-        } catch (error) {
-            console.log(error);
-        }finally{
+        logoutUser(appdata).then(()=>{
+            navigate('/login');
+        }).finally(()=>{
             stopSpinner();
             showModalAlert("You have been logged out!");
-        }
+        });
     }
 
     const LoginTab=()=> {
@@ -104,7 +77,7 @@ const Navbar = () => {
             <NavLink className="nav-link" to="/profile">Profile</NavLink>
         </li>
         <li className="nav-item">
-            <Link className="nav-link cursor-pointer" onClick={logoutUser} >Logout</Link>
+            <Link className="nav-link cursor-pointer" onClick={signoutUser} >Logout</Link>
         </li>
         </>
       )

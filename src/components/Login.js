@@ -56,7 +56,8 @@ const Login = () => {
         }else{
             sessionStorage.setItem('loggedin','true')
             showSimpleAlert("Login Successful");
-            Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
+            const userinfo = data.userData;
+            Object.entries(userinfo).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
             // console.log(userInfo);
             console.log("Login Successful");
             const token= Cookies.get('jwtoken');
@@ -64,9 +65,14 @@ const Login = () => {
                 Cookies.set('jwtoken',data.token);
             }
             // console.log(state,Cookies.get());
-            navigate('/');
+            if(userinfo.verified){
+                navigate('/');
+            }else{
+                navigate('/verify');
+            }
         }
         } catch (error) {
+            showModalAlert("Failed to Login");
             console.log(error);
         }finally{
             stopSpinner();

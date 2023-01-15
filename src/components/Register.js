@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect} from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import appdata from './appdata';
 import { useFormik } from 'formik';
 import registerSchema from '../schemas/registerSchema';
-import { loadAlerts, showModalAlert } from './AlertMsg';
+import { loadAlerts, showModalAlert} from './AlertMsg';
 import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
+import Cookies from 'js-cookie';
 const houseImg = require('../images/house.png')
 
 const Register = () => {
@@ -54,6 +55,7 @@ const Register = () => {
             // action.resetForm();
             // console.log(values);
             submitUserData();
+            
         }
     })
 
@@ -85,9 +87,14 @@ const Register = () => {
                 }
                 console.log("Failed to register!");
             } else {
+                const token = data.token;
+                if(!Cookies.get('jwtoken') || Cookies.get('jwtoken')!==token){
+                    Cookies.set('jwtoken',data.token)
+                }
                 showModalAlert("Registration Sucessfull");
                 console.log("Registration Sucessfull");
-                navigate('/login');
+                sessionStorage.setItem('loggedin','true')
+                navigate('/verify');
             }
         } catch (error) {
             console.log(error);
@@ -101,6 +108,7 @@ const Register = () => {
         loadSpinner();
         loadAlerts();
     }, [])
+
 
     return (
         <>
@@ -136,7 +144,7 @@ const Register = () => {
                             <div className="d-flex flex-row align-items-center mb-0">
                                 <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                 <div className="form-outline flex-fill mb-0">
-                                    <input type="number" name="phone" onBlur={handleBlur} onChange={handleChange} value={values.phone} className="form-control"
+                                    <input type="text" name="phone" onBlur={handleBlur} onChange={handleChange} value={values.phone} className="form-control"
                                         placeholder="Your Mobile no." />
                                 </div>
                             </div>
