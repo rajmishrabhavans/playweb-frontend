@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState} from 'react'
 //import {loadAlerts,showModalAlert} from './AlertMsg';
-import appdata from './appdata';
+import appdata from '../utility/appdata';
 
 let initValue= {
     index: 0,
@@ -39,9 +39,9 @@ const GetData = () => {
 
     useEffect(() => {
         if(sessionStorage.getItem('loggedin')){
-            setInterval(() => {
+            // setInterval(() => {
                 getSensorData();
-            }, 1000);
+            // }, 1000);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

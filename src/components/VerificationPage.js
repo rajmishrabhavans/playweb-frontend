@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { verifyEmail, sendEmail } from '../utility/email'
 import { showSimpleAlert } from './AlertMsg';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom'
-import appdata, { userInfo } from './appdata';
+import { NavLink, useNavigate } from 'react-router-dom'
+import appdata, { userInfo } from '../utility/appdata';
 import { getUserData } from '../utility/user';
 import * as Yup from 'yup';
 ;
@@ -83,8 +83,9 @@ const VerifyEmail = () => {
 
                         <div className="text-center ">
 
-                            <div className="w-100 mt-1">
-                                <p>{email}</p>
+                            <h2 className='text-danger'>Your Email verification is pending!</h2>
+                            <div className="w-100 mt-2">
+                                <p><b>Email : </b> {email}</p>
                                 <button className="btn btn-success" onClick={onSendVerification} type="button">Send Email</button>
                                 {msgSendDetails.remainingTime>0 && <div className="">You can send next mail after {msgSendDetails.remainingTime} sec</div>
 }
@@ -100,6 +101,7 @@ const VerifyEmail = () => {
                                     </form>
                                 </>
                             ) : (null)}
+                            <div className='mt-3'><NavLink to="/">skip for now</NavLink></div>
                             
                         </div>
 

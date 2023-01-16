@@ -1,4 +1,4 @@
-const { userInfo } = require("../components/appdata");
+const { userInfo } = require("./appdata");
 const Cookies = require('js-cookie');
 
 export const getUserData =async(appdata)=>{
@@ -28,7 +28,7 @@ export const getUserData =async(appdata)=>{
 
 export const logoutUser= async(appdata)=> {
     try {
-        console.log(appdata);
+        // console.log(appdata);
         const res= await fetch(appdata.baseUrl+"/logout",{
             method:"POST",
             headers:{
@@ -51,9 +51,9 @@ export const logoutUser= async(appdata)=> {
             gender:"male",
             creationdate:""
         }
-        console.log(sessionStorage.getItem('loggedin'));
+        // console.log(sessionStorage.getItem('loggedin'));
         sessionStorage.removeItem('loggedin')
-        console.log(sessionStorage.getItem('loggedin'));
+        // console.log(sessionStorage.getItem('loggedin'));
         Object.entries(placholder).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
         // console.log(userInfo);
     } catch (error) {

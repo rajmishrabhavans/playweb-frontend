@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import appdata, {userInfo} from './appdata';
+import appdata, {userInfo} from '../utility/appdata';
 const imgPath = require('../images/avatar3.png');
 
 let about = document.getElementById('aboutProfile');
@@ -46,7 +46,7 @@ const Profile = () => {
     }
 
     const changeContent = (changeTo) => {
-        console.log("some", changeTo);
+        // console.log("some", changeTo);
         // console.log("UserData: ", userData.name);
         setSelectedPart(changeTo);
         if (changeTo === 'about') {

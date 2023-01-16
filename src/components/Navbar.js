@@ -1,13 +1,17 @@
-import React, {  useEffect } from 'react'
+import React, {  useEffect,useState } from 'react'
 import logoImg from '../images/house-water-32.png'
-import { Link, NavLink,useNavigate } from 'react-router-dom'
-import appdata from './appdata'
+import { Link, NavLink,useLocation,useNavigate } from 'react-router-dom'
+import appdata from '../utility/appdata'
 import Cookies from 'js-cookie'
 import {loadAlerts,showModalAlert} from './AlertMsg';
 import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 import { logoutUser } from '../utility/user'
 
+const initTab = {login:'Login',register:'Register'};
 const Navbar = () => {
+    const [logRegTab,setLogRegTab]= useState(initTab)
+    const location = useLocation();
+    
     const navigate= useNavigate({});
     // const [isAuthenticated,setIsAuthenticated]= useState(false);
     const loadNavbar =async()=>{
@@ -37,12 +41,21 @@ const Navbar = () => {
         }
     }
     useEffect(() => {
+        
       loadSpinner();
       loadAlerts();
       loadNavbar();
+    //   if(location.pathname==='/login') highlightTab(null,'login')
+    //   if(location.pathname==='/register') highlightTab(null,'register')
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
+    useEffect(() => {
+        // to highlight login and register tab
+        // console.log('mylocation',location.pathname, location.key);
+        highlightTab(location.pathname)
+    
+    }, [location.pathname,location.key]);
     
     const signoutUser=async()=> {
         startSpinner();
@@ -54,20 +67,40 @@ const Navbar = () => {
         });
     }
 
-    const LoginTab=()=> {
+    // to highlight login and register tab
+    const highlightTab =(name)=>{
+        // console.log(name);
+        if(name === '/login'){
+            setLogRegTab({login:'<b>Login</b>',register:'Register'})
+        }else if(name === '/register'){
+            setLogRegTab({login:'Login',register:'<b>Register</b>'})
+        }else{
+            setLogRegTab({login:'Login',register:'Register'})
+        }
+    }
+
+    // show tabs when user is not logged in
+    const LogoutTab=()=> {
       return (
         <>
         <li className="nav-item">
-            <NavLink className="nav-link" to="/login">Login</NavLink>
+            <NavLink className="nav-link"name='about' to="/about">About</NavLink>
         </li>
-        <li className="nav-item">
-            <NavLink className="nav-link" to="/register">Register</NavLink>
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span dangerouslySetInnerHTML={{__html:logRegTab.login}}></span>/<span dangerouslySetInnerHTML={{__html:logRegTab.register}}></span>
+          </a>
+          <ul className="dropdown-menu">
+            <li><NavLink className="dropdown-item" name='login' to="/login">Login</NavLink></li>
+            <li><NavLink className="dropdown-item" name='register' to="/register">Register</NavLink></li>
+          </ul>
         </li>
         </>
       )
     }
 
-    const LogoutTab=()=> {
+    // show tabs when user is logged in
+    const LoginTab=()=> {
       return (
         <>
         <li className="nav-item">
@@ -90,7 +123,7 @@ const Navbar = () => {
         <>
             <nav className="navbar navbar-expand-lg bg-light">
                 <div className="container-fluid">
-                    <NavLink className="navbar-brand" to="/">
+                    <NavLink className="navbar-brand" name='logo' to="/">
                         <img src={logoImg} alt="Logo" width="30" height="30" className="d-inline-block align-text-top"/>
                         PlayWeb
                     </NavLink>
@@ -100,12 +133,9 @@ const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to="/">Home</NavLink>
+                                <NavLink className="nav-link" name='home' aria-current="page" to="/">Home</NavLink>
                             </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/about">About</NavLink>
-                            </li>
-                            {sessionStorage.getItem('loggedin')?<LogoutTab/>:<LoginTab/>}
+                            {sessionStorage.getItem('loggedin')?<LoginTab/>:<LogoutTab/>}
                         </ul>
                     </div>
                 </div>

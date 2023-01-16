@@ -3,7 +3,7 @@ import React, { useEffect} from 'react'
 import {useFormik} from 'formik';
 import contactSchema from '../schemas/contactSchema';
 import {loadAlerts,showModalAlert} from './AlertMsg';
-import appdata, {userInfo} from './appdata';
+import appdata, {userInfo} from '../utility/appdata';
 
 let loadcomp= document.querySelectorAll('.glowme');
 let initValue= {

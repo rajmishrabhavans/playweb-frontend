@@ -11,4 +11,9 @@ export const userInfo = {
     creationdate:""
 }
 
+export const fetchInfo= {
+    fetchTry:0,
+    interval:5000,
+}
+
 export default appdata;

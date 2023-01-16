@@ -1,6 +1,6 @@
 import React, { useEffect} from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import appdata from './appdata';
+import appdata from '../utility/appdata';
 import { useFormik } from 'formik';
 import registerSchema from '../schemas/registerSchema';
 import { loadAlerts, showModalAlert} from './AlertMsg';

@@ -1,6 +1,6 @@
 import {React, useEffect} from 'react'
 import {NavLink,useNavigate} from 'react-router-dom'
-import appdata,{userInfo} from './appdata';
+import appdata,{userInfo} from '../utility/appdata';
 import Cookies from 'js-cookie';
 import {useFormik} from 'formik';
 import loginSchema from '../schemas/loginSchema';

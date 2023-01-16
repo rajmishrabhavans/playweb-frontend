@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { showModalAlert} from "../components/AlertMsg";
-import appdata from "../components/appdata";
+import appdata from "./appdata";
 import { logoutUser } from "./user";
 
 export const verifyEmail= async(OTP)=>{

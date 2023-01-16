@@ -12,7 +12,7 @@ import ErrorPage from './components/ErrorPage';
 import BackPage from './components/BackPage';
 import AlertMsg from './components/AlertMsg';
 import VerificationPage from './components/VerificationPage';
-import GetData from './components/GetData';
+import GetData from './components/DisplayData';
 
 export const userContext = createContext();
 function App() {

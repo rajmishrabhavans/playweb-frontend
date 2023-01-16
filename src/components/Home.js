@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import React, { useState,useEffect} from 'react'
-import appdata, {userInfo} from './appdata';
+import appdata, {userInfo} from '../utility/appdata';
 
 let loadcomp= document.querySelectorAll('.glowme');
 const Home = () => {
