@@ -32,6 +32,7 @@ export const verifyEmail= async(OTP)=>{
         return true
     } catch (error) {
         console.log(error);
+        showModalAlert("Unable to verify your email")
         // error.email= 'Check your internet connection'
         return false;
     }
@@ -59,6 +60,7 @@ export const  sendEmail= async()=>{
         }
     } catch (error) {
         console.log(error);
+        showModalAlert("Unable to send email")
         // error.email= 'Check your internet connection'
         return error;
     }

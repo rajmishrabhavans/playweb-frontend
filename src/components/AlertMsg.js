@@ -23,6 +23,7 @@ const convertColor = (color) =>{
 
 // shows simple allert message at the top
 export const showSimpleAlert=(msg,bgcolor= 'success')=>{
+  if (!simplealertmsg) return;
   const lightbg = ['warning','light','white','info'];
   const availableColors = ['warning','light','white','info','danger','primary','success','dark','secondary']
   const extraColor = ['red','blue','green','black','grey','yellow','lightblue']
@@ -51,6 +52,7 @@ export const showSimpleAlert=(msg,bgcolor= 'success')=>{
 }
 
 export const showModalAlert=(msg)=>{
+  if(!modalalertmsg || !modalbtn) return;
   modalalertmsg.innerText = msg;
   modalbtn.click();
 }
