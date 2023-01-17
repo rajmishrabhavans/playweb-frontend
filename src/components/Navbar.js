@@ -3,7 +3,7 @@ import logoImg from '../images/house-water-32.png'
 import { Link, NavLink,useLocation,useNavigate } from 'react-router-dom'
 import appdata from '../utility/appdata'
 import Cookies from 'js-cookie'
-import {loadAlerts,showModalAlert} from './AlertMsg';
+import {loadAlerts,setModalBtnClick,showModalAlert, showSimpleAlert} from './AlertMsg';
 import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 import { logoutUser } from '../utility/user'
 
@@ -11,10 +11,10 @@ const initTab = {login:'Login',register:'Register'};
 const Navbar = () => {
     const [logRegTab,setLogRegTab]= useState(initTab)
     const location = useLocation();
-    
     const navigate= useNavigate({});
     // const [isAuthenticated,setIsAuthenticated]= useState(false);
     const loadNavbar =async()=>{
+
         try {
             const res= await fetch(appdata.baseUrl+"/getData",{
                 method:"POST",
@@ -26,7 +26,7 @@ const Navbar = () => {
                 })
             });
             if(res.status!==200){
-                // console.log("State: ",state);
+                // console.log("Status code: ",res.status);
                 if(!Cookies.get('jwtoken')){
                     sessionStorage.removeItem('loggedin')
                 }
@@ -57,14 +57,19 @@ const Navbar = () => {
     
     }, [location.pathname,location.key]);
     
-    const signoutUser=async()=> {
-        startSpinner();
-        logoutUser(appdata).then(()=>{
-            navigate('/login');
-        }).finally(()=>{
-            stopSpinner();
-            showModalAlert("You have been logged out!");
+    const signoutUser = ()=> {
+        console.log('Signing out user');
+        setModalBtnClick(()=>{
+            startSpinner();
+            logoutUser(appdata).then(()=>{
+                navigate('/login');
+            }).finally(()=>{
+                stopSpinner();
+                console.log('Showing alert');
+                showSimpleAlert("You have been logged out!",'red');
+            });
         });
+        showModalAlert("Are you sure you want to exit?",'Confirm')
     }
 
     // to highlight login and register tab

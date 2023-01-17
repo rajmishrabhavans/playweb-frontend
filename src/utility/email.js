@@ -58,6 +58,7 @@ export const  sendEmail= async()=>{
             showModalAlert("Email send successfully")
             throw new Error("Failed to send mail");
         }
+        showModalAlert("Email sent successfully")
     } catch (error) {
         console.log(error);
         showModalAlert("Unable to send email")

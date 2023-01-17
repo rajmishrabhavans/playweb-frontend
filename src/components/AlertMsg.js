@@ -1,11 +1,13 @@
 import React from 'react'
 
-let modalbtn,modalalertmsg,simplealertmsg;
+let modalbtn,modalalertmsg,simplealertmsg,modalMsgBtn,modalBtnMethod,closeModalBtn;
 // loads the alerts before using modal and simple alerts
 export const loadAlerts=()=>{
   modalbtn = document.getElementById('showModal');
+  modalMsgBtn = document.getElementById('modalMsgBtn');
   modalalertmsg= document.getElementById('modalalertmsg');
   simplealertmsg= document.getElementById('simplealertmsg');
+  closeModalBtn= document.getElementById('closeModalBtn');
 }
 
 const convertColor = (color) =>{
@@ -51,11 +53,37 @@ export const showSimpleAlert=(msg,bgcolor= 'success')=>{
   }, 5000);
 }
 
-export const showModalAlert=(msg)=>{
-  if(!modalalertmsg || !modalbtn) return;
+export const showModalAlert=(msg,buttonMsg= undefined)=>{
+  if(!modalalertmsg || !modalbtn || !modalMsgBtn) return;
+  if(buttonMsg){
+    modalMsgBtn.classList.remove('d-none');
+    modalMsgBtn.innerText = buttonMsg;
+  }else{
+    modalMsgBtn.classList.add('d-none');
+    modalMsgBtn.innerText = 'Confirm';
+  }
   modalalertmsg.innerText = msg;
   modalbtn.click();
 }
+
+export const setModalBtnClick = (btnMethod)=>{
+  if(!modalMsgBtn){
+    console.log("ModalAlert button not loaded");
+    return;
+  }
+  modalBtnMethod = btnMethod;
+}
+
+const onModalBtnClick = ()=>{
+  // console.log('Modal btn clicked',modalBtnMethod);
+  if(!modalBtnMethod){
+    console.log("ModalAlert method not loaded");
+    return;
+  }
+  closeModalBtn.click();
+  modalBtnMethod();
+}
+
 
 const AlertMsg = () => {
   return (
@@ -74,7 +102,8 @@ const AlertMsg = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id='closeModalBtn' className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id='modalMsgBtn' onClick={onModalBtnClick} className="btn btn-success d-none">Confirm</button>
             </div>
           </div>
         </div>
