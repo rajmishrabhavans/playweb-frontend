@@ -1,8 +1,8 @@
-const { userInfo } = require("./appdata");
+import appdata, {userInfo } from "./appdata";
 const Cookies = require('js-cookie');
 
-export const getUserData =async(appdata)=>{
-    // console.log(Cookies.get());
+//to get the user data from the backend
+export const getUserData = async() =>{
     try {
         // console.log(appdata);
         const res= await fetch(appdata.baseUrl+"/getData",{
@@ -16,19 +16,30 @@ export const getUserData =async(appdata)=>{
         });
         if(res.status>201){
             console.log("Cannot fetch data");
+            throw new Error("Cannot fetch data, status code - ",res.status);
         }
         const data= await res.json();
-        Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
         return data;
     } catch (error) {
         console.log(error);
+        return false;
     }
 }
 
+//to get the user data and store it locally for faster processing
+export const loadUserData = async() =>{
+    const data = await getUserData();
+    if(data){
+        console.log(data);
+        Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
+    }
+    return data;
+}
 
+//to log out user from the browser
 export const logoutUser= async(appdata)=> {
     try {
-        // console.log(appdata);
+        
         const res= await fetch(appdata.baseUrl+"/logout",{
             method:"POST",
             headers:{
@@ -41,7 +52,7 @@ export const logoutUser= async(appdata)=> {
         if(res.status>201){
             throw new Error(res.Error);
         }
-        // setIsAuthenticated(false);
+        // remove the existing authentication token
         Cookies.remove('jwtoken',{path:''});
         const placholder = {
             _id:"295179",
@@ -51,9 +62,8 @@ export const logoutUser= async(appdata)=> {
             gender:"male",
             creationdate:""
         }
-        // console.log(sessionStorage.getItem('loggedin'));
+        
         sessionStorage.removeItem('loggedin')
-        // console.log(sessionStorage.getItem('loggedin'));
         Object.entries(placholder).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
         // console.log(userInfo);
     } catch (error) {

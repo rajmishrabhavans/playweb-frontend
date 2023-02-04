@@ -1,72 +1,60 @@
-import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import appdata, {userInfo} from '../utility/appdata';
+import { userInfo } from '../utility/appdata';
+import { loadUserData } from '../utility/user';
 const imgPath = require('../images/avatar3.png');
 
 let about = document.getElementById('aboutProfile');
-let timeline = document.getElementById('temelineProfile');
-let loadcomp= document.querySelectorAll('.glowme');
+let otherinfo = document.getElementById('otherInfo');
+let loadcomp = document.querySelectorAll('.glowme');
 
 const Profile = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(userInfo);
     const [selectedPart, setSelectedPart] = useState('about');
 
+    // getting data from backend to fill profile page data
     const loadProfilePage = async () => {
 
-        try {
-            loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
-            const res = await fetch(appdata.baseUrl+"/getdata", {
-                method: "POST",
-                headers: {
-                    //send cookies
-                    cookie:Cookies.get('jwtoken'),
-                    "Content-Type": "application/json"
-                },
-                body:JSON.stringify({
-                    cookie:Cookies.get('jwtoken')
-                })
-            });
-            // console.log(res);
-            if (res.status !== 200) {
-                navigate('/login');
-                throw new Error(res.error);
-            }
-            const data = await res.json();
-            // console.log(data);
-            Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
-            // console.log(userInfo);
-            setUserData(data);
-        } catch (error) {
-            console.log(error);
-        }finally{
-            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');})
-        }
+        //applying placeholders while data is being fetched from backend
+        loadcomp.forEach((elem) => { elem.classList.add('placeholder'); })
+        loadUserData()
+            .then((data) => {
+                if(data)
+                setUserData(data);
+            })
+            .finally(() => {
+                loadcomp.forEach((elem) => { elem.classList.remove('placeholder') });
+            })
     }
 
+    //change the content when tabs are clicked
     const changeContent = (changeTo) => {
-        // console.log("some", changeTo);
-        // console.log("UserData: ", userData.name);
+
         setSelectedPart(changeTo);
         if (changeTo === 'about') {
-            timeline.classList.remove('active')
+            otherinfo.classList.remove('active')
             about.classList.add('active');
-        } else if (changeTo === 'timeline') {
+        } else if (changeTo === 'otherinfo') {
             about.classList.remove('active')
-            timeline.classList.add('active');
+            otherinfo.classList.add('active');
         }
     }
     useEffect(() => {
+        // if user is logged in then only allow else send user to login page
+        if (!sessionStorage.getItem('loggedin')) {
+            navigate('/login');
+        }
+        //getting components after the page is loaded
         about = document.getElementById('aboutProfile');
-        timeline = document.getElementById('timelineProfile');
-        loadcomp= document.querySelectorAll('.glowme');
-        if(!userInfo.creationdate){
+        otherinfo = document.getElementById('otherInfo');
+        loadcomp = document.querySelectorAll('.glowme');
+        if (!userInfo.creationdate) {
             loadProfilePage();
-        }else{
+        } else {
             setUserData(userInfo);
         }
-        // console.log('about: ',about,'timeline ',timeline);
+        // console.log('about: ',about,'otherinfo ',otherinfo);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -75,7 +63,7 @@ const Profile = () => {
         return (
             <>
                 <div className="placeholder-glow d-flex flex-column mt-4 profileSection">
-                    
+
                     <div className='row my-2' >
                         <span className="col-xs-11 col-sm-5 text_bold">UserId : </span>
                         <span className="glowme col-xs-11 col-sm-7">{userData._id}</span>
@@ -106,25 +94,25 @@ const Profile = () => {
         )
     }
 
-    //display timeline section
-    const TimelineSection = () => {
+    //display otherinfo section
+    const OtherInfo = () => {
         return (
             <>
-                <div className="d-flex flex-column mt-4" id="timelineSection" >
+                <div className="d-flex flex-column mt-4" id="otherInfo" >
                     <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">Experience : </span>
-                        <span className="col-xs-11 col-sm-7">Intermediate</span>
+                        <span className="col-xs-11 col-sm-5 text_bold">Role : </span>
+                        <span className="col-xs-11 col-sm-7">Society Admin</span>
                     </div>
                     <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">Title1 : </span>
-                        <span className="col-xs-11 col-sm-7">Description1</span>
+                        <span className="col-xs-11 col-sm-5 text_bold">Room no. : </span>
+                        <span className="col-xs-11 col-sm-7">105</span>
                     </div>
                     <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">Title2 : </span>
-                        <span className="col-xs-11 col-sm-7">Description2</span>
+                        <span className="col-xs-11 col-sm-5 text_bold">Tank capacity : </span>
+                        <span className="col-xs-11 col-sm-7">400L</span>
                     </div>
                     <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">Title3 : </span>
+                        <span className="col-xs-11 col-sm-5 text_bold">Other : </span>
                         <span className="col-xs-11 col-sm-7">Description3</span>
                     </div>
                 </div>
@@ -145,18 +133,18 @@ const Profile = () => {
                                 <img src={imgPath} width="200px"
                                     className="img-fluid mb-2 profile_img" alt="login_img" />
                                 <div className="p-0 w-100">
-                                    <h5 className="card-title">Some title</h5>
-                                    <p className="card-text">Some Description</p>
+                                    <h5 className="card-title">Society Name</h5>
+                                    <p className="card-text">Location of society</p>
                                 </div>
-                                <ul className="list-group list-group-flush" style={{zIndex:"0"}}>
-                                    <li className="list-group-item">An item</li>
-                                    <li className="list-group-item">A second item</li>
-                                    <li className="list-group-item">A third item</li>
+                                <ul className="list-group list-group-flush" style={{ zIndex: "0" }}>
+                                    <li className="list-group-item">Room number</li>
+                                    <li className="list-group-item">tank capacity</li>
+                                    <li className="list-group-item">other info</li>
                                 </ul>
-                                <div className="card-body">
+                                {/* <div className="card-body">
                                     <a href="/profile" className="card-link">Card link</a>
                                     <a href="/profile" className="card-link">Another link</a>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className="col-sm-10 col-md-8 d-flex flex-column order-2 mt-4" >
@@ -164,7 +152,7 @@ const Profile = () => {
                                 <div className='placeholder-glow' >
                                     <div className='glowme text_bold'>{userData.name}</div>
                                     <div className="w-100"></div>
-                                    <div className='glowme text-primary'>Work Profession</div>
+                                    <div className='glowme text-primary'>Society Admin</div>
                                     <div className="w-100"></div>
                                     <div className='glowme text-secondry'>Other info</div>
                                 </div>
@@ -180,10 +168,10 @@ const Profile = () => {
                                             <span className="nav-link active" onClick={() => { changeContent('about') }} id='aboutProfile'>Profile</span>
                                         </li>
                                         <li className="nav-item">
-                                            <span className="nav-link" onClick={() => { changeContent('timeline') }} id='timelineProfile'>Timeline</span>
+                                            <span className="nav-link" onClick={() => { changeContent('otherinfo') }} id='otherInfo'>Other info</span>
                                         </li>
                                     </ul>
-                                    {selectedPart === 'about' ? <ProfileSection userData={userData} /> : <TimelineSection />}
+                                    {selectedPart === 'about' ? <ProfileSection userData={userData} /> : <OtherInfo />}
                                 </div>
                             </div>
                         </div>

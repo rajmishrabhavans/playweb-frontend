@@ -1,6 +1,7 @@
 const appdata = {
-    // baseUrl: "https://playwebbackend.onrender.com",
-    baseUrl: "http://localhost:8000",
+    baseUrl: "https://playwebbackend.onrender.com",
+    // baseUrl: "http://localhost:8000",
+    // baseUrl: "http://192.168.43.14:8000"
 }
 export const userInfo = {
     _id:"295179",
@@ -13,7 +14,7 @@ export const userInfo = {
 
 export const fetchInfo= {
     fetchTry:0,
-    interval:5000,
+    interval:1100,
 }
 
 export default appdata;

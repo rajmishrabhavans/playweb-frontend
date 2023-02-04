@@ -15,6 +15,7 @@ const Login = () => {
         email:"",
         password:""
     }
+    // using formik validation to validate users input
     const {values,errors,touched,handleChange,handleSubmit,handleBlur}= useFormik({
         initialValues:initValue,
         validationSchema:loginSchema,
@@ -24,7 +25,8 @@ const Login = () => {
             submitUserData();
         }
     })
-    // console.log(errors);
+    
+    // try to login user by submitting the form
     const submitUserData =async()=>{
         try {
             startSpinner();
@@ -35,7 +37,7 @@ const Login = () => {
         }
         const res = await fetch(appdata.baseUrl+"/login",{
             method: "POST",
-            credentials:"include",
+            // credentials:"include",
             headers:{
                 "Content-Type":"application/json"
             },
@@ -45,7 +47,6 @@ const Login = () => {
         });
         const data= await res.json();
 
-        // console.log(res.status,data);
         if(res.status>201 || !data){
             if(data && data.error==='Incorrect password'){
                 showModalAlert("Incorrect password");
@@ -58,7 +59,7 @@ const Login = () => {
             showSimpleAlert("Login Successful");
             const userinfo = data.userData;
             Object.entries(userinfo).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
-            // console.log(userInfo);
+            
             console.log("Login Successful");
             const token= Cookies.get('jwtoken');
             if(!token){
@@ -78,6 +79,8 @@ const Login = () => {
             stopSpinner();
         }
     }
+
+    // load alerts and spinner after loading page
     useEffect(()=>{
         loadSpinner();
         loadAlerts();
@@ -110,6 +113,11 @@ const Login = () => {
                         </div>
                         <p className='ms-4 mt-1 mb-4 text-danger' >{errors.password && touched.password ? errors.password:""}</p>
 
+                        <div className="d-flex flex-row justify-content-center mb-4">
+                            <div className="">
+                                Forgot Password ? <NavLink to="/forgotPassword">click here</NavLink>
+                            </div>
+                        </div>
                         <div className="d-flex flex-row justify-content-center mb-4">
                             <div className="">
                                 Don't have an account? <NavLink to="/register">Apply here</NavLink>

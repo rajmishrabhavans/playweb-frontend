@@ -1,9 +1,8 @@
 import Cookies from "js-cookie";
-import { showModalAlert} from "../components/AlertMsg";
+import { showModalAlert, showSimpleAlert} from "../components/AlertMsg";
 import appdata from "./appdata";
-import { logoutUser } from "./user";
 
-export const verifyEmail= async(OTP)=>{
+export const verifyEmail= async(email,OTP)=>{
 
     try {
         const res = await fetch(appdata.baseUrl + "/verifyemail", {
@@ -13,31 +12,33 @@ export const verifyEmail= async(OTP)=>{
             },
             body: JSON.stringify({
                 'cookie':Cookies.get('jwtoken'),
-                otp:OTP+""
+                otp:OTP+"",
+                email
             })
         });
         const data = await res.json();
         if (res.status>201) {
+            console.log(data.error);
             if (data.error === 'Invalid request missing parameters') {
                 showModalAlert('Invalid request missing parameters')
             }else if (data.error === 'Sorry User not found') {
                 showModalAlert('Sorry User not found')
-            }else if (data.error === 'Please provide valid otp') {
-                showModalAlert('Please provide valid otp')
+            }else if (data.error === 'invalid otp') {
+                showModalAlert('Incorrect OTP')
+            }else{
+                showModalAlert("Unable to verify your email")
             }
-            throw new Error("Failed to send mail");
+            throw new Error("Failed to verify email");
         }
         showModalAlert("Email Verified successfully")
-        logoutUser();
         return true
     } catch (error) {
         console.log(error);
-        showModalAlert("Unable to verify your email")
         // error.email= 'Check your internet connection'
         return false;
     }
 }
-export const  sendEmail= async()=>{
+export const  sendEmail= async(email,subject="",content="")=>{
     try {
         const res = await fetch(appdata.baseUrl + "/sendemail", {
             method: "POST",
@@ -46,24 +47,64 @@ export const  sendEmail= async()=>{
             },
             body:JSON.stringify({
                 'cookie':Cookies.get('jwtoken'),
+                email,
+                subject,
+                content
             })
         });
         const data = await res.json();
         if (res.status>201) {
-            if (data.error === 'User already Verified') {
-                showModalAlert('User already Verified')
-            }else if (data.error === 'User not Found') {
+            if (data.error === 'User not Found') {
                 showModalAlert('User not Found')
+                return false;
             }
-            showModalAlert("Email send successfully")
+            showModalAlert("Unable to send email")
             throw new Error("Failed to send mail");
         }
-        showModalAlert("Email sent successfully")
+        return true;
+        // showSimpleAlert("Email send successfully");
+        // showModalAlert("Email sent successfully")
     } catch (error) {
         console.log(error);
         showModalAlert("Unable to send email")
         // error.email= 'Check your internet connection'
+        return false;
+    }
+}
+
+
+export const forgotPassword= async(email,otp,password)=>{
+    try {
+        const res = await fetch(appdata.baseUrl + "/forgotPassword", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body:JSON.stringify({
+                email,
+                otp,
+                password
+            })
+        });
+        const data = await res.json();
+        if (res.status>201) {
+            console.log(data.error);
+            if(data.error==='User not Found'){
+                showModalAlert('Sorry User not found');
+                return data.error;
+            }else if(data.error==='invalid otp'){
+                showModalAlert('Invalid OTP');
+                return data.error;
+            }
+            throw new Error("Failed to send mail");
+        }
+        showSimpleAlert("Password changed successfully");
+        return true;
+        // showModalAlert("Email sent successfully")
+    } catch (error) {
+        console.log(error);
+        showModalAlert("Unable to change password")
+        // error.email= 'Check your internet connection'
         return error;
     }
-    console.log('send');
 }

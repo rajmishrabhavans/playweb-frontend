@@ -4,6 +4,7 @@ import {useFormik} from 'formik';
 import contactSchema from '../schemas/contactSchema';
 import {loadAlerts,showModalAlert} from './AlertMsg';
 import appdata, {userInfo} from '../utility/appdata';
+import { loadUserData } from '../utility/user';
 
 let loadcomp= document.querySelectorAll('.glowme');
 let initValue= {
@@ -17,12 +18,15 @@ const Contactus = () => {
         initialValues:initValue,
         validationSchema:contactSchema,
         onSubmit: (values,action)=>{
-            action.resetForm();
-            // console.log(values);
-            sendMessage();
+            //clear contact form on submit and reload it
+            sendMessage().then(()=>{
+                loadContactPage();
+                action.resetForm();
+            })
         }
     })
-    // console.log(errors);
+
+    // sent message to the backend
     const sendMessage = async () => {
         try {
             const {name,email,phone,message}= values;
@@ -40,57 +44,37 @@ const Contactus = () => {
                     'cookie':Cookies.get('jwtoken'),
                 })
             });
-            // console.log(userData.message);
             if (res.status !== 200) {
-                // navigate('/login');
                 throw new Error(res.error);
             }
             // const data = await res.json();
             showModalAlert("Message sent successfully");
-            // values.message= "";
         } catch (error) {
             console.log(error);
         }
     }
 
+    //load values of value feilds from the backend
     const loadContactPage = async () => {
-        console.log("contact load");
-        try {
-            loadcomp.forEach((elem)=>{elem.classList.add('placeholder');})
-            const res = await fetch(appdata.baseUrl+"/getdata", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body:JSON.stringify({
-                    cookie:Cookies.get('jwtoken')
-                })
-            });
 
-            if (res.status !== 200) {
-                // navigate('/login');
-                throw new Error(res.error);
-            }
-            const data = await res.json();
-            // console.log(data);
-            if(data.error || !data.name || !data.email || !data.phone){
-                console.log("Unable to fetch user data");
-            }else{
-                Object.entries(data).forEach((e) => {if(userInfo[e[0]]!==undefined){userInfo[e[0]]= e[1]}});
-                
-                setFieldValue('name',userInfo.name)
-                setFieldValue('email',userInfo.email)
-                setFieldValue('phone',userInfo.phone)
-            }
-        } catch (error) {
-            console.log(error);
-        }finally{
-            loadcomp.forEach((elem)=>{elem.classList.remove('placeholder');});
-        }
+        //applying placeholders while data is being fetched from backend
+        loadcomp.forEach((elem) => { elem.classList.add('placeholder'); })
+        loadUserData()
+            .then((data) => {
+                if(data){
+                    setFieldValue('name',data.name)
+                    setFieldValue('email',data.email)
+                    setFieldValue('phone',data.phone)
+                }
+            })
+            .finally(() => {
+                //removing placeholders after data is fetched
+                loadcomp.forEach((elem) => { elem.classList.remove('placeholder') });
+            })
     }
-    // console.log(userData);
 
     useEffect(() => {
+        
         loadAlerts();
         loadcomp= document.querySelectorAll('.glowme');
         if(!userInfo.creationdate && sessionStorage.getItem('loggedin')){

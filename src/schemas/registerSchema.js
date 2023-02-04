@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 
+// validation schema for registration form
 const registerSchema = () => Yup.object({
     name:Yup.string().test('Valid Character?','Name is Invalid',(str)=> !(/[^a-zA-Z\s]+/.test(str))).min(2).max(25).required("please enter your name"),
     email:Yup.string().email().required("please enter your email"),

@@ -1,79 +1,132 @@
-import Cookies from 'js-cookie';
-import React, { useEffect, useState} from 'react'
-//import {loadAlerts,showModalAlert} from './AlertMsg';
-import appdata from '../utility/appdata';
+import '../App.css'
+import React, {useEffect, useRef, useState } from 'react'
+import { fetchInfo } from '../utility/appdata';
+import { loadProgBar,toggleCheckbox,updateSensorData,getSensorData} from '../utility/espFucntion';
+import { useNavigate} from 'react-router-dom';
 
-let initValue= {
+let initValue = {
     index: 0,
     upperTank: 0,
     lowerTank: 0,
     flowSpeed: 0,
+    waterPassed: 0,
+    buildLed:false,
+    motorOn:false,
     tankFull: false
 }
 const GetData = () => {
-    const [sensorData,setSensorData] = useState(initValue);
-    const getSensorData = async () => {
-        console.log("contact load");
-        try {
-            const res = await fetch(appdata.baseUrl+"/getSensorData", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body:JSON.stringify({
-                    cookie:Cookies.get('jwtoken')
-                })
-            });
-
-            if (res.status > 201) {
-                throw new Error(res.error);
-            }
-            const data = await res.json();
-            setSensorData(data.data);
-            
-        } catch (error) {
-            console.log(error);
-        }
+    const navigate= useNavigate();
+    const [sensorData, setSensorData] = useState(initValue);
+    const [repeatedData, setRepeatedData] = useState(false);
+   
+    function usePrevious(value) {
+        const ref = useRef();
+        useEffect(() => {
+          ref.current = value; //assign the value of ref to the argument
+        },[value]); //this code will run when the value of 'value' changes
+        return ref; //in the end, return the current ref value.
     }
-    // console.log(userData);
+    
+    const prevData= usePrevious(sensorData.index);
 
+    // fetch sensor data from backend and update it
+    // if multiple request are failed then stop api request
     useEffect(() => {
-        if(sessionStorage.getItem('loggedin')){
-            // setInterval(() => {
-                getSensorData();
-            // }, 1000);
+        let loadSensorData;
+        let repeatData= 0;
+        if (sessionStorage.getItem('loggedin')) {
+            console.log("started interval ");
+            getSensorData(setSensorData);
+            loadProgBar();
+            loadSensorData = setInterval(() =>{
+                getSensorData(setSensorData).then((sent)=>{
+                    // console.log(fetchInfo.fetchTry,fetchInfo.interval,sent);
+                    if(sent.index===prevData.current){
+                        repeatData++;
+                        if(repeatData>5){
+                            setRepeatedData(true);
+                        }
+                    }else{
+                        repeatData=0;
+                        setRepeatedData(false)
+                    }
+                    console.log(sent.index,prevData.current,repeatData);
+                    if(sent){
+                        if(fetchInfo.fetchTry>=20){
+                            fetchInfo.fetchTry = 0;
+                        }else if(fetchInfo.fetchTry>0){
+                            fetchInfo.fetchTry = fetchInfo.fetchTry-1;
+                        }
+                    }else{
+                        if(fetchInfo.fetchTry>=20){
+                            clearInterval(loadSensorData);
+                        }else{
+                            fetchInfo.fetchTry = fetchInfo.fetchTry+1;
+                        }
+                    }
+                })}, fetchInfo.interval);
+            
+        }else{
+            navigate('/login')
+        }
+
+        return () =>{
+            console.log("stopped interval ");
+            clearInterval(loadSensorData);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-  return (
-    <>
-                <div className="placeholder-glow d-flex flex-column m-5 profileSection">
+    
+    return (
+        <>
+
+            <div id="row text-center">
+                <div className='m-4 mx-auto d-flex flex-column pe-2 w-80 col-sm-11 col-md-10 col-xl-8'>
+
+                    <h2 className='text-center'>Water Monitoring & control</h2>
+                    <p className='text-center text-warning'>{repeatedData?"This may be some old data":""}</p>
                     
-                    <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">index: </span>
-                        <span className="glowme col-xs-11 col-sm-7">{sensorData.index}</span>
+                    <div className="container form-check form-switch form-check-reverse content-align-center">
+                        <div className="my-4 d-flex justify-content-around">
+                            <div>Build-in LED : </div>
+                            <input className="form-check-input" name="buildLed" onClick={(e)=>{toggleCheckbox(e,sensorData,setSensorData)}} 
+                            checked={sensorData.buildLed} type="checkbox" role="switch" id="buildLed" style={{ transform: "scale(2.4)" }} readOnly />
+                        </div>
+                        <div className="my-4 d-flex justify-content-around">
+                            <div>Motor Switch : </div>
+                            <input className="form-check-input" name="motorOn" onClick={(e)=>{toggleCheckbox(e,sensorData,setSensorData)}} 
+                            checked={sensorData.motorOn} type="checkbox" role="switch" id="motorSwitch" style={{ transform: "scale(2.4)" }} readOnly />
+                        </div>
                     </div>
-                    <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">upperTank : </span>
-                        <span className="glowme col-xs-11 col-sm-7">{sensorData.upperTank}</span>
-                    </div>
-                    <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">lowerTank : </span>
-                        <span className="glowme col-xs-11 col-sm-7">{sensorData.lowerTank}</span>
-                    </div>
-                    <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">flowSpeed : </span>
-                        <span className="glowme col-xs-11 col-sm-7">{sensorData.flowSpeed}</span>
-                    </div>
-                    <div className='row my-2' >
-                        <span className="col-xs-11 col-sm-5 text_bold">tankFull : </span>
-                        <span className="glowme col-xs-11 col-sm-7">{sensorData.tankFull}</span>
+
+                    {sensorData.tankFull && <p id="alertmsg" className="markedr" >Tank is Full</p>}
+                    <p id="datetime" className="markedr" ></p>
+
+                    {/* %FLOWSENSORHOLDER% */}
+                    <p> Flow speed: <span id="flowspeed">{sensorData.flowSpeed}</span></p>
+                    <p> Water passed: <span id="flowamt">{sensorData.waterPassed}</span></p> 
+                    <input type="submit" className='btn btn-info mx-auto w-140' value="Reset Water Passed" onClick={() => {updateSensorData({resetWater:true})}} />
+
+                    {/* <!--  Start filling till water Amount: <input type="text" placeholder= "Water Amount(in ml)" id="flowvalue">
+            <input type="submit" value="Start filling" onclick= flowAmount()> 
+            --> */}
+                    <div className="container row d-flex justify-content-center">
+                    <p>{sensorData.index}</p>
+                        <div className="box col-md-5">
+                            <div className="circle" id="progress1" data-dots="70" data-percent={sensorData.upperTank} style={{ bgColor: ' #ff0070' }}></div>
+                            <div className="text" ><h2 id="prog1">{sensorData.upperTank}%</h2><small>Upper Tank</small></div>
+                        </div>
+
+                        <div className="box col-md-5">
+                            <div className="circle" id="progress2" data-dots="70" data-percent={sensorData.lowerTank} style={{ bgColor: '#0f0' }}></div>
+                            <div className="text" ><h2 id="prog2">{sensorData.lowerTank}%</h2><small>Lower Tank</small></div>
+                        </div>
                     </div>
                 </div>
-
-            </>
-  )
+            </div>
+        </>
+    )
 }
 
 export default GetData

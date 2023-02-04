@@ -1,4 +1,4 @@
-import React, { createContext } from 'react'
+import React, { createContext, useEffect } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
@@ -12,10 +12,22 @@ import ErrorPage from './components/ErrorPage';
 import BackPage from './components/BackPage';
 import AlertMsg from './components/AlertMsg';
 import VerificationPage from './components/VerificationPage';
-import GetData from './components/DisplayData';
+import GetData from './components/GetData';
+import ForgotPass from './components/ForgotPass';
+import ScheduleWater from './components/ScheduleWater'
+import Configure from './components/Configure';
+import { fetchEspConfigData } from './utility/espFucntion';
+import SupplyList from './components/SupplyList';
 
 export const userContext = createContext();
 function App() {
+
+  useEffect(() => {
+    fetchEspConfigData();
+    return () => {
+      // second
+    }
+  }, [])
   return (
     <>
       <Navbar/>
@@ -28,11 +40,16 @@ function App() {
         <Route path="/register" element={<BackPage Element= {Register}/>} />
         <Route path="/profile" element={<BackPage Element= {Profile}/>} />
         <Route path="/getdata" element={<BackPage Element= {GetData}/>} />
+        <Route path="/schedule" element={<BackPage Element= {ScheduleWater}/>} />
+        <Route path="/supplyList" element={<BackPage Element= {SupplyList}/>} />
+        <Route path="/configure" element={<BackPage Element= {Configure}/>} />
+        <Route path="/forgotPassword" element={<BackPage Element= {ForgotPass}/>} />
         <Route path="/verify" element={<BackPage Element= {VerificationPage}/>} />
         <Route path="/*" element={<ErrorPage/>} />
       </Routes>
     </>
   )
 }
+
 
 export default App

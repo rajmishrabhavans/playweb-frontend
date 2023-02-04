@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import appdata from "./appdata";
 
-//loads the progress bar
+// loads the progress bar that shows upper and lower waterlevel
 export async function loadProgBar(){
     const circles = document.querySelectorAll('.circle');
         circles.forEach(elem => {
@@ -30,9 +30,14 @@ export async function loadProgBar(){
         })
     }
     
-  export async function toggleCheckbox(element) {
+  // updates the esp pin value when togglebox is clicked
+  export async function toggleCheckbox(element,sensorData,setSensorData) {
       const name= element.target.name;
       const isChecked = element.target.checked;
+      if(isChecked)
+        setSensorData({...sensorData,[name]: true})
+      else
+        setSensorData({...sensorData,[name]: false})
       console.log(name,isChecked);
       if(name==="buildLed"){
         if(isChecked){
@@ -49,7 +54,8 @@ export async function loadProgBar(){
       }
     };
 
-    const updateSensorData = async (updateData) => {
+    // updates the sensor data by the given values
+    export const updateSensorData = async (updateData) => {
       // console.log(updateData);
       try {
           const res = await fetch(appdata.baseUrl + "/updateSensorData", {
@@ -73,6 +79,165 @@ export async function loadProgBar(){
           console.log(error);
       }
   }
+
+  // gets the sensor data and set it to states
+  export const getSensorData = async (setSensorData) => {
+    try {
+        const res = await fetch(appdata.baseUrl + "/getSensorData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cookie: Cookies.get('jwtoken')
+            })
+        });
+
+        if (res.status > 201) {
+            throw new Error(res.error);
+        }
+        const data = await res.json();
+        console.log(data.data);
+        
+        setSensorData(data.data);
+        loadProgBar();
+        return data.data;
+
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+// load configuration settings of esp data
+export const loadEspConfigData =async(setFieldValue)=>{
+  try {
+      const res = await fetch(appdata.baseUrl + "/getEspConfigData", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              cookie: Cookies.get('jwtoken'),
+          })
+      });
+
+      if (res.status > 201) {
+          throw new Error(res.error);
+      }
+      const data = await res.json();
+      setFieldValue('tankDepth',data.udata.tankDepth);
+      setFieldValue('maxFill',data.udata.maxFill);
+      console.log(data.udata);
+
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+// set config data of esp to state variables
+export const setEspConfigData =async(configData)=>{
+  try {
+      const res = await fetch(appdata.baseUrl + "/setEspConfigData", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              cookie: Cookies.get('jwtoken'),
+              configData
+          })
+      });
+
+      if (res.status > 201) {
+          throw new Error(res.error);
+      }
+      const data = await res.json();
+      updateSensorData({updateConfigData: true})
+      console.log(data.msg);
+
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+export const fetchEspConfigData =async()=>{
+  try {
+      const res = await fetch(appdata.baseUrl + "/fetchEspConfigData", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              cookie: Cookies.get('jwtoken'),
+          })
+      });
+
+      if (res.status > 201) {
+          throw new Error(res.error);
+      }
+      const data = await res.json();
+      console.log(data.msg);
+
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+  // saves the supply list to the database
+  export const saveSupplyList = async (supplyList) => {
+    try {
+        const res = await fetch(appdata.baseUrl + "/saveSupplyList", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cookie: Cookies.get('jwtoken'),
+                supplyList
+            })
+        });
+
+        if (res.status > 201) {
+            throw new Error(res.error);
+        }
+        const data = await res.json();
+        console.log(data);
+        
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+  // saves the supply list to the database
+  export const getSupplyList = async () => {
+    try {
+        const res = await fetch(appdata.baseUrl + "/getSupplyList", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cookie: Cookies.get('jwtoken'),
+            })
+        });
+
+        if (res.status > 201) {
+            throw new Error(res.error);
+        }
+        const data = await res.json();
+        // console.log(data);
+        
+        return data.supplyList.roomList;
+
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
 
     /*
     var today = new Date();
