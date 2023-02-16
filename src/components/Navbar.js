@@ -88,6 +88,8 @@ const Navbar = () => {
             setmonitorControlTab('Schedule');
         }else if(name==='/configure'){
             setmonitorControlTab('Configure');
+        }else if(name==='/supplyList'){
+            setmonitorControlTab('SupplyList');
         }
     }
 

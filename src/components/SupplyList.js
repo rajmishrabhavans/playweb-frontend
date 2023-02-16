@@ -4,8 +4,9 @@ import * as Yup from 'yup';
 // import Sortable from 'sortablejs';
 import { ReactSortable } from "react-sortablejs";
 import { getSupplyList, saveSupplyList } from '../utility/espFucntion';
+import { showSimpleAlert } from './AlertMsg';
 
-// addor remove list items
+// add or remove list items
 const SupplyList = () => {
   const [supplyList, setSupplyList] = useState([
     { room: 1, name: 'Room1', supplyOn: false },
@@ -16,7 +17,7 @@ const SupplyList = () => {
        setSeed(Math.random());
    }
 
-
+  // reducer for adding,removing and updating supply listItem
   const manageList = (type, value) => {
     let roomlist = supplyList;
     if (type === "addListItem") {
@@ -36,6 +37,7 @@ const SupplyList = () => {
     }
   }
 
+  // validation for adding new room
   const roomError = 'range [0-10000]';
   const roomSchema = () => Yup.object({
     name: Yup.string().required("please enter room name")
@@ -51,7 +53,8 @@ const SupplyList = () => {
     }
     return errors;
   }
-
+  
+  // handling form with formik
   const { values, errors, touched, handleChange, handleSubmit, handleBlur } = useFormik({
     initialValues: { name: "", room: "" },
     validationSchema: roomSchema,
@@ -62,6 +65,7 @@ const SupplyList = () => {
     }
   })
 
+  //update supplyOn value on clicking checkbox
   const toggleSupply = (room, name, isChecked,evt) => {
     // console.log(room, name, isChecked);
     manageList("updateListItem", { room, name, supplyOn: isChecked });
@@ -70,7 +74,7 @@ const SupplyList = () => {
 
   }
 
-  // list item
+  // list item to be displayed
   const sList = (room, name,supplyOn,toggleSupply) => {
     return (
       <div key={room} className="row g-3 mb-4">
@@ -94,16 +98,21 @@ const SupplyList = () => {
     );
   }
 
+  //update supplylist to database
   const saveChanges= async()=>{
     // console.log((supplyList[0]));
-    saveSupplyList(supplyList);
+    const saved = await saveSupplyList(supplyList);
+    if(saved) showSimpleAlert("List Updated Successfully")
   }
 
+  //fetch supply list from database
   const loadSupplyList= async()=>{
     const slist= await getSupplyList();
     setSupplyList(slist);
     // console.log(slist);
   }
+
+  //select all checkbox of supply list
   const selectAll= async()=>{
     let slist= supplyList.map((e)=>{
       return {...e,supplyOn:true};
@@ -111,25 +120,30 @@ const SupplyList = () => {
     setSupplyList(slist);
 
   }
+
+  //deselect all checkbox of supply list
   const deselectAll= async()=>{
     let slist= supplyList.map((e)=>{
       return {...e,supplyOn:false};
     });
     setSupplyList(slist);
   }
+
+  //sort the list in ascending order
   const sortasc= async()=>{
     let slist= supplyList.sort((a,b)=>{return a.room-b.room});
     setSupplyList(slist);
     reset()
-    // console.log(slist);
   }
+
+  //sort the list in descending order
   const sortdec= async()=>{
     let slist= supplyList.sort((a,b)=>{return b.room-a.room});
     setSupplyList(slist);
     reset()
-    // console.log(slist);
   }
 
+  //load list when page is loaded
   useEffect(() => {
     supplyList.forEach((e)=>{
       console.log(e);
@@ -144,9 +158,10 @@ const SupplyList = () => {
 
   return (
     <div className='m-3'>
-
+  
+  <h2 className='text-center mb-3'>Supply List</h2>
       <form onSubmit={handleSubmit}>
-        <div className="row g-3 mb-2">
+        <div className="row g-3 mb-4">
           <div className="col-sm-7">
             <input type="text" className="form-control" onBlur={handleBlur} onChange={handleChange} value={values.name}
               name='name' placeholder="name" aria-label="City" />
@@ -165,10 +180,10 @@ const SupplyList = () => {
 
       <div className='mb-3'>
         
-      <button className='btn btn-secondary me-2' type='button' onClick={selectAll} >Select All</button>
-      <button className='btn btn-primary me-2' type='button' onClick={deselectAll} >Deselect All</button>
-      <button className='btn btn-secondary me-2' type='button' onClick={sortasc}>Sort Asc</button>
-      <button className='btn btn-secondary me-2' type='button' onClick={sortdec}>Sort Dec</button>
+      <button className='btn btn-secondary me-2 mb-2' type='button' onClick={selectAll} >Select All</button>
+      <button className='btn btn-primary me-2 mb-2' type='button' onClick={deselectAll} >Deselect All</button>
+      <button className='btn btn-secondary me-2 mb-2' type='button' onClick={sortasc}>Sort Asc</button>
+      <button className='btn btn-secondary me-2 mb-2' type='button' onClick={sortdec}>Sort Dec</button>
       </div>
 
       <ReactSortable key={seed} list={supplyList} setList={setSupplyList} ghostClass='bg-info'>

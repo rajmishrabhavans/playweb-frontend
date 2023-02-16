@@ -1,15 +1,15 @@
 import '../App.css'
 import React, {useEffect, useRef, useState } from 'react'
 import { fetchInfo } from '../utility/appdata';
-import { loadProgBar,toggleCheckbox,updateSensorData,getSensorData} from '../utility/espFucntion';
+import { loadProgBar,toggleCheckbox,getSensorData} from '../utility/espFucntion';
 import { useNavigate} from 'react-router-dom';
 
 let initValue = {
     index: 0,
     upperTank: 0,
     lowerTank: 0,
-    flowSpeed: 0,
-    waterPassed: 0,
+    UTVolume: 0,
+    LTVolume: 0,
     buildLed:false,
     motorOn:false,
     tankFull: false
@@ -104,9 +104,8 @@ const GetData = () => {
                     <p id="datetime" className="markedr" ></p>
 
                     {/* %FLOWSENSORHOLDER% */}
-                    <p> Flow speed: <span id="flowspeed">{sensorData.flowSpeed}</span></p>
-                    <p> Water passed: <span id="flowamt">{sensorData.waterPassed}</span></p> 
-                    <input type="submit" className='btn btn-info mx-auto w-140' value="Reset Water Passed" onClick={() => {updateSensorData({resetWater:true})}} />
+                    <p> UperTank Volume : <span id="uperTankVolume">{sensorData.UTVolume}</span></p>
+                    <p> LowerTank Volume : <span id="lowerTankVolume">{sensorData.LTVolume}</span></p>
 
                     {/* <!--  Start filling till water Amount: <input type="text" placeholder= "Water Amount(in ml)" id="flowvalue">
             <input type="submit" value="Start filling" onclick= flowAmount()> 
