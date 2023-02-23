@@ -69,17 +69,31 @@ export const updateSensorData = async (updateData) => {
     return false;
 }
 
-// gets the sensor data and set it to states
-export const getSensorData = async (setSensorData) => {
+// gets the sensor data from server
+export const getSensorData = async () => {
   
-  const res = await fetchApi("/getSensorData")
+  const res = await fetchApi("/getSensorData");
   
-    console.log("getSensorData: ");
-    console.log(res.data);
+    // console.log("getSensorData: ");
+    // console.log(res.data);
     if(res){
-      setSensorData(res.data);
-      loadProgBar();
       return res.data;
+    }
+    return false;
+ 
+}
+
+// gets the sensor data and set it to states
+export const loadSensorData = async (setSensorData) => {
+  
+  const res = await getSensorData();
+  
+    console.log("loadSensorData: ");
+    console.log(res);
+    if(res){
+      setSensorData(res);
+      loadProgBar();
+      return res;
     }
     return false;
  
@@ -186,8 +200,8 @@ export const getHomeData = async () => {
   
   const res = await fetchApi("/getHomeData")
   
-    console.log("roomData: ");
-    console.log(res.data.roomData);
+    // console.log("roomData: ");
+    // console.log(res.data.roomData);
     if(res){
       loadProgBar();
       return res.data.roomData;

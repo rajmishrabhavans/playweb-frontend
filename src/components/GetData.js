@@ -1,7 +1,7 @@
 import '../App.css'
 import React, {useEffect, useRef, useState } from 'react'
 import { fetchInfo } from '../utility/appdata';
-import { loadProgBar,toggleCheckbox,getSensorData} from '../utility/espFucntion';
+import { loadProgBar,toggleCheckbox,loadSensorData} from '../utility/espFucntion';
 import { useNavigate} from 'react-router-dom';
 
 let initValue = {
@@ -32,14 +32,14 @@ const GetData = () => {
     // fetch sensor data from backend and update it
     // if multiple request are failed then stop api request
     useEffect(() => {
-        let loadSensorData;
+        let loadDataInterval;
         let repeatData= 0;
         if (sessionStorage.getItem('loggedin')) {
             console.log("started interval ");
-            getSensorData(setSensorData);
+            loadSensorData(setSensorData);
             loadProgBar();
-            loadSensorData = setInterval(() =>{
-                getSensorData(setSensorData).then((sent)=>{
+            loadDataInterval = setInterval(() =>{
+                loadSensorData(setSensorData).then((sent)=>{
                     // console.log(fetchInfo.fetchTry,fetchInfo.interval,sent);
                     if(sent.index===prevData.current){
                         repeatData++;
@@ -59,7 +59,7 @@ const GetData = () => {
                         }
                     }else{
                         if(fetchInfo.fetchTry>=20){
-                            clearInterval(loadSensorData);
+                            clearInterval(loadDataInterval);
                         }else{
                             fetchInfo.fetchTry = fetchInfo.fetchTry+1;
                         }
@@ -72,7 +72,7 @@ const GetData = () => {
 
         return () =>{
             console.log("stopped interval ");
-            clearInterval(loadSensorData);
+            clearInterval(loadDataInterval);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

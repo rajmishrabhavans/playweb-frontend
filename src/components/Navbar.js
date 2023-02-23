@@ -149,7 +149,7 @@ const Navbar = () => {
                 <div className="container-fluid">
                     <NavLink className="navbar-brand" name='logo' to="/">
                         <img src={logoImg} alt="Logo" width="30" height="30" className="d-inline-block align-text-top" />
-                        Water Automation
+                        Tank Automation
                     </NavLink>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>

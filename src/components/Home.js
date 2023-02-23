@@ -5,7 +5,7 @@ import { loadUserData } from '../utility/user';
 let loadcomp;
 const Home = () => {
     const [userData, setUserData] = useState({
-        name: "WATER AUTOMATION",
+        name: "TANK AUTOMATION",
         info: ""
     });
     // getting data from backend to fill home page data

@@ -1,7 +1,7 @@
 import '../App.css'
 import React, { useEffect, useReducer, useState } from 'react'
 //import {loadAlerts,showModalAlert} from './AlertMsg';
-import { getHomeData, getSupplyList, updateHomeData} from '../utility/espFucntion';
+import { getHomeData, getSensorData, getSupplyList, updateHomeData} from '../utility/espFucntion';
 import { useNavigate } from 'react-router-dom';
 import { showSimpleAlert } from './AlertMsg';
 
@@ -13,6 +13,7 @@ let timerMsg = "";
 const ScheduleWater = () => {
     const navigate = useNavigate();
     const [scheduleTime, setScheduleTime] = useState(initSchedule);
+    const [waterVolume, setWaterVolume] = useState({currUTVolume:0, currLTVolume:0, prevUTVolume:0, prevLTVolume:0 });
     const [supplyBy,setsupplyBy] = useState('time');
     const [homeData, setHomeData] = useState({ roomNo: 0, flowSpeed: 0, waterPassed: 0, supplyOn: false });
     const [supplyList, setSupplyList] = useState([
@@ -29,7 +30,7 @@ const ScheduleWater = () => {
                 startAfter = startAfter - 1;
                 break;
             case "resetStartAfter":
-                startAfter = 0;
+                startAfter = -1;
                 break;
             case "setStartAfter":
                 startAfter = action.value;
@@ -38,7 +39,7 @@ const ScheduleWater = () => {
                 remainTime = remainTime - 1;
                 break;
             case "resetRemainTime":
-                remainTime = 0;
+                remainTime = -1;
                 break;
             case "setRemainTime":
                 remainTime = action.value;
@@ -47,7 +48,7 @@ const ScheduleWater = () => {
                 remainQuantity = remainQuantity - 1;
                 break;
             case "resetRemainQuantity":
-                remainQuantity = 0;
+                remainQuantity = -1;
                 break;
             case "setRemainQuantity":
                 remainQuantity = action.value;
@@ -91,6 +92,7 @@ const ScheduleWater = () => {
         // setTimeout(async () => {
             const roomList = await getHomeData();
             let slist = [...supplyList];
+            // console.log(slist);
             for (let i = 0; i < roomList.length; i++) {
                 if (roomList[i].roomNo === slist[0].room && roomList[i].waterPassed) {
                     slist[0].waterPassed = roomList[i].waterPassed;
@@ -99,7 +101,7 @@ const ScheduleWater = () => {
                 }
             }
             setSupplyList(slist);
-            console.log("Supply list updated ");
+            // console.log("Supply list updated ");
         // }, 1500);
     }
 
@@ -125,8 +127,8 @@ const ScheduleWater = () => {
         } else if (!stopAfter) {
             showSimpleAlert("Select stop time", 'red')
             return;
-        } else if (stopAfter > 100 || stopAfter < 0) {
-            showSimpleAlert("Select proper stop time in range[0-100]", 'red')
+        } else if (stopAfter > 1000 || stopAfter < 0) {
+            showSimpleAlert("Select proper stop time in range[0-1000]", 'red')
             return;
         }
         let timeDiff = Number.parseInt((Date.parse(scheduleTime.startTime) - Date.now()) / 1000);
@@ -140,7 +142,14 @@ const ScheduleWater = () => {
 
         setSupplyInfo({ type: "setRemainRoom", value: supplyList.length });
         setSupplyInfo({ type: "setStartAfter", value: timeDiff });
-        setSupplyInfo({ type: "setRemainTime", value: Number.parseInt(stopAfter * 60) });
+        if(supplyBy==='time'){
+            setSupplyInfo({ type: "setRemainTime", value: Number.parseInt(stopAfter * 60) });
+        }else{
+            setSupplyInfo({ type: "setRemainQuantity", value: stopAfter });
+            getSensorData().then((data)=>{
+                setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume, prevLTVolume:data.LTVolume })
+            })
+        }
         setSupplyInfo({ type: "setTimerOn", value: true });
     }
 
@@ -149,21 +158,31 @@ const ScheduleWater = () => {
         let intervalId;
         // console.log(supplyInfo.remainTime, supplyInfo.remainRoom);
         if (supplyInfo.startAfter >= 0 && supplyInfo.timerOn) {
-            if (supplyInfo.remainTime > 0) {
+            if (supplyInfo.remainTime >= 0 || supplyInfo.remainQuantity >= 0) {
                 timerMsg = `Motor will start in ${supplyInfo.startAfter}s`
-            }
-            intervalId = setInterval(() => {
-                setSupplyInfo({ type: "decStartAfter" });
-                console.log(supplyInfo.startAfter);
-                if (supplyInfo.startAfter === 0) {
+                intervalId = setInterval(() => {
                     setSupplyInfo({ type: "decStartAfter" });
-                    if (supplyInfo.remainTime > 0) {
-                        // updateSensorData({ motorOn: true });
-                        timerMsg = `Motor Started`
-                        showSimpleAlert("Motor Started");
+                    console.log(supplyInfo.startAfter);
+                    if (supplyInfo.startAfter === 0) {
+                        setSupplyInfo({ type: "decStartAfter" });
+                        if (supplyInfo.remainTime <= 0) {
+                            // updateSensorData({ motorOn: true });
+                            if(supplyBy==='quantity'){
+                                getSensorData().then((data)=>{
+                                    setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume, prevLTVolume:data.LTVolume });
+                                    if(!(data.currUTVolume>=0 && data.currUTVolume<=1400)){
+                                        getSensorData().then((data)=>{
+                                            setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume, prevLTVolume:data.LTVolume })
+                                        });
+                                    }
+                                });
+                            }
+                            timerMsg = `Motor Started`
+                            showSimpleAlert("Motor Started");
+                        }
                     }
+                }, 1000);
                 }
-            }, 1000);
         } else if (supplyInfo.remainTime >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
             const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
             if (currentRoom) {
@@ -215,6 +234,88 @@ const ScheduleWater = () => {
                     stopTimer();
                 }
             }, 1000);
+        }else if (supplyInfo.remainQuantity >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
+            const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
+            
+            getSensorData().then((data)=>{
+                setWaterVolume({...waterVolume, currUTVolume:data.UTVolume,currLTVolume:data.LTVolume})
+            })
+            updateWaterPassed();
+            let passedVolume= waterVolume.prevUTVolume- waterVolume.currUTVolume;
+            if (currentRoom) {
+                getHomeData().then((rdata) => {
+                    rdata.find((item) => {
+                        if (item.roomNo === currentRoom.room) {
+                            console.log(item);
+                            setHomeData(item);
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+                if (currentRoom.supplyStatus === 0) {
+                    currentRoom.supplyStatus = 1;
+                    updateHomeData({ roomNo: currentRoom.room, supplyOn: true });
+                }
+                timerMsg = `${passedVolume} ml water passed from ${supplyInfo.remainQuantity}, current room(${currentRoom.room}), remaining rooms: ${supplyInfo.remainRoom - 1}\n
+                CurrentVolume ${waterVolume.currUTVolume}, Prev Volume ${waterVolume.prevUTVolume}`
+            }
+            intervalId = setInterval(() => {
+                if (supplyInfo.remainRoom > 0) {
+                    
+                    let waterPass= supplyList[supplyList.length - supplyInfo.remainRoom];
+                    setSupplyInfo({ type: "decRemainTime" });
+                    setTimeout(() => {
+                        updateWaterPassed();
+                        getHomeData().then((rdata) => {
+                            rdata.find((item) => {
+                                if (item.roomNo === waterPass.room) {
+                                    console.log(item);
+                                    setHomeData(item);
+                                    return true;
+                                }
+                                return false;
+                            });
+                        });
+                    }, 500);
+
+                    //if the flowsensor shows less than 50% water has passed but tank water is reduced more than given amount
+                    if(passedVolume >= supplyInfo.remainQuantity && waterPass.waterPassed<scheduleTime.stopAfter*0.5){
+                        getSensorData().then((data)=>{
+                            setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume-waterPass.waterPassed, prevLTVolume:data.LTVolume })
+                        })
+                        console.log("Stopped");
+                    }
+                    //if the flowsensor is showing 90% water has passed or the tank is showing given amount is reduced
+                    else if (passedVolume >= supplyInfo.remainQuantity || waterPass.waterPassed+2*homeData.flowSpeed>=scheduleTime.stopAfter*0.9) {
+                        console.log(`Water Passed for room:${currentRoom.room}(fs): ${waterPass.waterPassed}+${2*homeData.flowSpeed}`);
+                        console.log(`Water Passed for room:${currentRoom.room}(tank based): ${passedVolume}`);
+                        setSupplyInfo({ type: "decRemainRoom" });
+                        updateHomeData({ roomNo: currentRoom.room, supplyOn: false });
+                        supplyList[supplyList.length - supplyInfo.remainRoom].supplyStatus = 2;
+
+                        console.log("Finished room " + currentRoom.room);
+
+                        updateWaterPassed();
+                        console.log(supplyList);
+
+                        if (supplyInfo.remainRoom > 0) {
+                            getSensorData().then((data)=>{
+                                setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume, prevLTVolume:data.LTVolume });
+                                setSupplyInfo({ type: "decRemainTime" });
+                            });
+                            setSupplyInfo({ type: "setRemainQuantity", value: scheduleTime.stopAfter });
+                        }
+                        else {
+                            // setSupplyInfo({ type: "decRemainTime" });
+                            stopTimer();
+                        }
+                    }
+                } else {
+                    setSupplyInfo({ type: "decRemainRoom" });
+                    stopTimer();
+                }
+            }, 1000);
         }
         return () => {
             clearInterval(intervalId);
@@ -225,9 +326,10 @@ const ScheduleWater = () => {
     // stop timer by reseting time values
     const stopTimer = () => {
         setSupplyInfo({ type: "resetStartAfter" });
+        setSupplyInfo({ type: "resetRemainQuantity" });
         setSupplyInfo({ type: "resetRemainTime" });
         setSupplyInfo({ type: "setTimerOn", value: false });
-        if (supplyInfo.remainTime > 0 && supplyInfo.startAfter < 1) {
+        if (supplyInfo.remainTime > 0 && supplyInfo.startAfter < 1){
             timerMsg = `Motor Stopped`;
             showSimpleAlert("Motor Stopped");
         } else {
@@ -248,6 +350,9 @@ const ScheduleWater = () => {
             loadSupplyList().then((slist) => {
                 console.log(slist);
             });
+            getSensorData().then((data)=>{
+                setWaterVolume({currUTVolume:data.UTVolume,currLTVolume:data.LTVolume, prevUTVolume:data.UTVolume, prevLTVolume:data.LTVolume })
+            })
             // getHomeData();
         } else {
             navigate('/login')
