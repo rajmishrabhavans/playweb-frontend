@@ -16,6 +16,8 @@ import MyDashboard from './DashComponent/MyDashboard';
 import Spinner from './components/Spinner';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
+import Access from './components/AccessPage';
+import InternalServerError from './components/InternalServerError';
 
 export const loggedInContext = createContext("");
 function App() {
@@ -51,6 +53,8 @@ function App() {
       <Route path="/forgotPassword" element={<BackPage Element= {ForgotPass}/>} />
       <Route path="/verify" element={<BackPage Element= {VerificationPage}/>} />
       <Route path="/*" element={<ErrorPage/>} />
+      <Route path="/accessdenied" element={<Access />} />
+      <Route path='/servererror' element={<InternalServerError />} />
     </Routes>
     </>
     }

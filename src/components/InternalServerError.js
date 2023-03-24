@@ -1,10 +1,8 @@
 import React from 'react'
-import errorImg from '../images/404.png'
+import errorImg from '../images/500.png'
 
-const ErrorPage = () => {
+const InternalServerError = () => {
   return (
-    <>
-        
     <div className="container-fluid main_content">
         <div className="row">
             <div className="col-md-10 col-12 mx-auto">
@@ -13,9 +11,12 @@ const ErrorPage = () => {
                         <figure>
                             <img src={errorImg} alt="avatar" className="img-fluid mt-5" title="myAvatar"/>
                         </figure>
-                        <div className='text-center'>
-                        <h1 className='font-weight-bold' style={{color: "#9cd02d"}}>You Missed</h1>
-                        <h4 className='text-dark'>The page you are looking for doesn't exist</h4>
+                        <div className='text-center text-bold'>
+                        <h1 className='font-weight-bold' style={{color: "#9cd02d"}}>Internal Server Error</h1>
+                        <div className='text-dark'>
+                        <h4>We're experiencing an internal server problem.</h4>
+                        <h4>Please try again later</h4>
+                        </div>
                         <a href="/"><button className='btn mt-3 text-white' style={{backgroundColor: "#9cd02d"}}> Go back to home</button></a>
                         </div>
                     </div>
@@ -23,8 +24,7 @@ const ErrorPage = () => {
             </div>
         </div>
     </div>
-    </>
   )
 }
 
-export default ErrorPage
+export default InternalServerError

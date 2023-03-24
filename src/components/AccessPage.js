@@ -1,10 +1,8 @@
 import React from 'react'
-import errorImg from '../images/404.png'
+import errorImg from '../images/403.png'
 
-const ErrorPage = () => {
+const Access = () => {
   return (
-    <>
-        
     <div className="container-fluid main_content">
         <div className="row">
             <div className="col-md-10 col-12 mx-auto">
@@ -14,8 +12,8 @@ const ErrorPage = () => {
                             <img src={errorImg} alt="avatar" className="img-fluid mt-5" title="myAvatar"/>
                         </figure>
                         <div className='text-center'>
-                        <h1 className='font-weight-bold' style={{color: "#9cd02d"}}>You Missed</h1>
-                        <h4 className='text-dark'>The page you are looking for doesn't exist</h4>
+                        <h1 className='display-3 font-weight-bold' style={{color: "#9cd02d"}}>Access Forbidden</h1>
+                        <h5 className='text-dark'>You tried to access a page you didn't have prior authorization for. Please contact our team for verification</h5>
                         <a href="/"><button className='btn mt-3 text-white' style={{backgroundColor: "#9cd02d"}}> Go back to home</button></a>
                         </div>
                     </div>
@@ -23,8 +21,7 @@ const ErrorPage = () => {
             </div>
         </div>
     </div>
-    </>
   )
 }
 
-export default ErrorPage
+export default Access
