@@ -1,7 +1,7 @@
 const appdata = {
-    baseUrl: "https://playwebbackend.onrender.com",
+    // baseUrl: "https://playwebbackend.onrender.com",
     // baseUrl: "http://localhost:8000",
-    // baseUrl: "http://192.168.43.14:8000"
+    baseUrl: "http://192.168.43.14:8000"
 }
 export const adminInfo = {
     _id:"295179",

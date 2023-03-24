@@ -89,13 +89,14 @@ export const saveTankAlerts = async (alerts) => {
   }
 
 // gets the alerts from the database
-export const getTankAlert = async () => {
+export const getTankAlert = async (markRead=undefined) => {
     
-    const res = await fetchApi("/getAlerts")
+    const res = await fetchApi("/getAlerts",markRead)
+    console.log(res)
     
       if(res.adminAlerts){
         return res.adminAlerts;
       }else{
         return false;
       }
-  }
+}

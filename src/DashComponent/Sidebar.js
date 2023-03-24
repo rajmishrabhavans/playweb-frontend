@@ -19,7 +19,7 @@ function Sidebar() {
 
     useEffect(() => {
       const sidelinks= document.getElementsByClassName("sidelink")
-      console.log(sidelinks);
+    //   console.log(sidelinks);
       Array.from(sidelinks).forEach((elem)=>{
         elem.addEventListener('click', changeStyle)
     })

@@ -6,8 +6,10 @@ import moment from 'moment';
 import { getTankAlert, logoutAdmin } from '../utility/admin'
 import { useContext, useEffect } from 'react';
 import { AdminContext, AlertContext, SidebarContext } from './MyDashboard';
+import { loggedInContext } from '../App';
 
 const Topbar = (status) => {
+    const{setLoggedIn}= useContext(loggedInContext)
     const { adminData } = useContext(AdminContext)
     const navigate = useNavigate({});
     const {alerts,setAlerts}= useContext(AlertContext)
@@ -31,9 +33,10 @@ const Topbar = (status) => {
         }
         setModalBtnClick(() => {
             logoutAdmin(appdata).then(() => {
+                setLoggedIn(false)
                 navigate('/');
                 console.log(appdata);
-                window.location.reload();
+                // window.location.reload();
             }).finally(() => {
                 // console.log('Showing alert');
                 showSimpleAlert("You have been logged out!", 'red');
@@ -43,12 +46,15 @@ const Topbar = (status) => {
     }
     
     useEffect(() => {
+        console.log(alerts);
+        // alertsCount = alerts ? alerts.alertsMsg.length-alerts.markRead : -1;
+        // console.log(alerts.alertsMsg.length,alerts.markRead,alertsCount);
         loadAlerts();
         getTankAlert()
-        .then((data)=>{
-            setAlerts(data.alerts);
+        .then((data)=>{console.log('alert data:',data);
+            setAlerts({alertsMsg:data.alerts.reverse(),markRead:data.read});
             console.log(data.alerts);
-        })
+        }).catch(e=>console.log(e))
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -74,7 +80,7 @@ const Topbar = (status) => {
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i className="fas fa-bell fa-fw"></i>
                                 {/*  <!-- Counter - Alerts --> */}
-                                <span className="badge badge-danger badge-counter">{alerts ? alerts.length : -1}</span>
+                                <span className={`badge badge-danger badge-counter ${(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)<=0?'d-none':''}`}>{alerts ? alerts.alertsMsg.length-alerts.markRead : -1}</span>
                             </a>
                             {/*   <!-- Dropdown - Alerts --> */}
                             <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -83,9 +89,9 @@ const Topbar = (status) => {
                                     Alerts Center
                                 </h6>
 
-                            {alerts && alerts.slice(0,3).map((alert,index)=>{
+                            {alerts && alerts.alertsMsg && alerts.alertsMsg.slice(0,3).map((alert,index)=>{
                                 return(
-                                <a key={index} className="dropdown-item d-flex align-items-center" href=" ">
+                                <a key={index} className={`dropdown-item d-flex align-items-center ${(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)>index?'fw-bold':''}`} href=" ">
                                     <div className="mr-3">
                                         <div className="icon-circle bg-primary">
                                             <i className="fas fa-file-alt text-white"></i>

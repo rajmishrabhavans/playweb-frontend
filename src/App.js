@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useEffect } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
@@ -15,15 +15,26 @@ import ForgotPass from './components/ForgotPass';
 import MyDashboard from './DashComponent/MyDashboard';
 import Spinner from './components/Spinner';
 import Cookies from 'js-cookie';
+import { useState } from 'react';
 
+export const loggedInContext = createContext("");
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(()=>{
+    if(localStorage.getItem('loggedin') && Cookies.get('jwtoken')){
+      setLoggedIn(true);
+    }
+  },[])
+  
   return (
     
     <>
+    
+    <loggedInContext.Provider value= {{loggedIn, setLoggedIn}}>
     <AlertMsg/>
     <Spinner/>
-    {localStorage.getItem('loggedin') && Cookies.get('jwtoken') ? 
+    {loggedIn ? 
     
     <MyDashboard /> 
     
@@ -43,6 +54,7 @@ function App() {
     </Routes>
     </>
     }
+    </loggedInContext.Provider>
   </>
     
   )

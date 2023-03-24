@@ -41,7 +41,7 @@ export const SidebarContext = createContext("");
 function MyDashboard() {
   const navigate = useNavigate();
   const [espData, setEspData] = useState(initValue);
-  const [alerts,setAlerts]= useState([])
+  const [alerts,setAlerts]= useState({alertsMsg:[],markRead:0})
   const [adminData, setAdminData] = useState(adminInfo);
   const [sidebarOn,setSidebarStatus]= useState(false)
   const [usersdata, setUserdata] = useState([])

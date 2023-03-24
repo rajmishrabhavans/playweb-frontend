@@ -78,7 +78,7 @@ const Cards = ({ title, imageUrl, title1, title2, title3, title4 }) => {
         <div className='flip-card-back'>
         <i onClick={flipCard} className="far fa-window-close"></i>
             <h2 className='mt-2 ms-2'>Specification</h2>
-            <p className="card-text ms-2">
+            <div className="card-text ms-2">
                 <ol type='1'>
                     {/* <div>{spec}</div> */}
                     <li className='mt-2 mb-2'>{title1}</li>
@@ -86,7 +86,7 @@ const Cards = ({ title, imageUrl, title1, title2, title3, title4 }) => {
                     <li className='mt-1 mb-2'>{title3}</li>
                     <li className='mt-1 mb-2'>{title4}</li>
                 </ol>
-            </p>
+            </div>
         </div>
       </div>
     </div>

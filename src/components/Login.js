@@ -1,4 +1,4 @@
-import {React, useEffect} from 'react'
+import {React, useContext, useEffect} from 'react'
 import {NavLink,useNavigate} from 'react-router-dom'
 import appdata,{adminInfo} from '../utility/appdata';
 import Cookies from 'js-cookie';
@@ -6,11 +6,12 @@ import {useFormik} from 'formik';
 import loginSchema from '../schemas/loginSchema';
 import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 import {loadAlerts,showModalAlert,showSimpleAlert} from './AlertMsg';
+import { loggedInContext } from '../App';
 // import { loadSpinner, startSpinner, stopSpinner } from './Spinner';
 const buildingImg= require('../images/building.png');
 
 const Login = () => {
-    //eslint-disable-next-line
+    const{setLoggedIn}= useContext(loggedInContext)
     const navigate= useNavigate();
     const initValue= {
         email:"",
@@ -69,10 +70,11 @@ const Login = () => {
             }
             console.log(data.token);
             if(data.token){
+                setLoggedIn(true)
                 localStorage.setItem('loggedin','true')
                 showSimpleAlert("Login Successful");
                 navigate('/');
-                window.location.reload();
+                // window.location.reload();
             }else{
                 showSimpleAlert("Failed to Validate User");
             }
