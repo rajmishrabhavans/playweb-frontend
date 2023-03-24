@@ -1,0 +1,7 @@
+{
+  "name": "TankAutomation",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
