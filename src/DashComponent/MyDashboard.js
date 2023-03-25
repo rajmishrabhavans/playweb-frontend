@@ -33,6 +33,7 @@ let initValue = {
   motorOn: false,
   tankFull: false
 }
+export const LiveDataContext = createContext("");
 export const EspContext = createContext("");
 export const AdminContext = createContext("");
 export const UsersContext = createContext("");
@@ -40,6 +41,7 @@ export const AlertContext = createContext("");
 export const SidebarContext = createContext("");
 function MyDashboard() {
   const navigate = useNavigate();
+  const [liveData, setLiveData] = useState(false);
   const [espData, setEspData] = useState(initValue);
   const [alerts,setAlerts]= useState({alertsMsg:[],markRead:0})
   const [adminData, setAdminData] = useState(adminInfo);
@@ -78,6 +80,7 @@ function MyDashboard() {
 
   return (
     <AdminContext.Provider value= {{adminData,setAdminData}}>
+    <LiveDataContext.Provider value= {{liveData,setLiveData}}>
     <EspContext.Provider value={{espData,setEspData}}>
     <AlertContext.Provider value={{alerts,setAlerts}}>
     <SidebarContext.Provider value={{sidebarOn,setSidebarStatus}}>
@@ -112,6 +115,7 @@ function MyDashboard() {
     </SidebarContext.Provider>
 </AlertContext.Provider>
 </EspContext.Provider>
+</LiveDataContext.Provider>
 </AdminContext.Provider>
   );
 }

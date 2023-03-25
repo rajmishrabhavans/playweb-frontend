@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 // import { CurrTable } from '../accessory/CurrTable';
 // import { MiniCard, OneProgressCard } from '../accessory/MiniCard';
 import { CardFill} from '../accessory/progressbar/FillProgress';
-import { EspContext } from './MyDashboard';
+import { EspContext, LiveDataContext } from './MyDashboard';
 import { fetchInfo } from '../utility/appdata';
 import { getSupplyList2, loadProgBar, loadSensorData } from '../utility/espFucntion';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,8 @@ import moment from 'moment/moment';
 
 const Dashboard = () => {
   const {espData,setEspData} = useContext(EspContext);
+  const {liveData,setLiveData} = useContext(LiveDataContext);
   const navigate = useNavigate();
-  const [repeatedData, setRepeatedData] = useState(false);
 
 function usePrevious(value) {
     const ref = useRef();
@@ -48,14 +48,14 @@ const lastSupply= useRef("not filled")
                 if (sent.index === prevData.current) {
                     repeatData++;
                     if (repeatData >= fetchInfo.maxRetry) {
-                        setRepeatedData(true);
+                        setLiveData(false)
                         clearInterval(loadDataInterval);
                     }
                 } else {
                     repeatData = 0;
-                    setRepeatedData(false)
+                    setLiveData(true)
                 }
-                console.log(sent.index, prevData.current, repeatData,repeatedData);
+                console.log(sent.index, prevData.current, repeatData,liveData);
             })
         }, fetchInfo.interval);
 
@@ -77,7 +77,7 @@ const lastSupply= useRef("not filled")
       {/*  <!-- Page Heading --> */}
       <div className="d-sm-flex align-items-center justify-content-between">
         <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
-          <p className='text-center text-warning'>{repeatedData ? "This may be some old data" : ""}</p>
+          <p className='text-center text-warning'>{!liveData ? "This may be some old data" : ""}</p>
         <a href="/" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
             <i className="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
         </div>

@@ -5,11 +5,12 @@ import appdata from '../utility/appdata';
 import moment from 'moment';
 import { getTankAlert, logoutAdmin } from '../utility/admin'
 import { useContext, useEffect } from 'react';
-import { AdminContext, AlertContext, SidebarContext } from './MyDashboard';
+import { AdminContext, AlertContext, LiveDataContext, SidebarContext } from './MyDashboard';
 import { loggedInContext } from '../App';
 
 const Topbar = (status) => {
     const{setLoggedIn}= useContext(loggedInContext)
+    const {liveData} = useContext(LiveDataContext);
     const { adminData } = useContext(AdminContext)
     const navigate = useNavigate({});
     const {alerts,setAlerts}= useContext(AlertContext)
@@ -52,8 +53,10 @@ const Topbar = (status) => {
         loadAlerts();
         getTankAlert()
         .then((data)=>{console.log('alert data:',data);
+            if(data && data.alerts){
             setAlerts({alertsMsg:data.alerts.reverse(),markRead:data.read});
             console.log(data.alerts);
+            }
         }).catch(e=>console.log(e))
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,6 +112,22 @@ const Topbar = (status) => {
                             </div>
                         </li>
 
+                        <div className="topbar-divider d-sm-block"></div>
+
+                        <div className='live-logo'> 
+                        {liveData?
+                        <>
+                        <i className="fas fa-wifi mt-4"></i>
+                        <div className="live-text text-success">Esp is live</div>
+                        </>
+                        :
+                        <>
+                        <i className="fas fa-ban mt-4"></i>
+                        <div className="live-text text-warning">Esp is Disconnected</div>
+                        </>
+                        }
+                        </div>
+                        
                         <div className="topbar-divider d-sm-block"></div>
 
                         {/* <!-- Nav Item - User Information --> */}

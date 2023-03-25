@@ -349,3 +349,19 @@ input[type="file"] {
   overflow: auto;
 }
 }
+
+.live-text {
+  position:absolute;
+  float: left;
+  width: 240px;
+  display: none;
+  background: white;
+  border: 1px solid black;
+  border-radius: 7px;
+  margin-top: 18px;
+  margin-left: -60px;
+  padding: 5px;
+}
+.live-logo:hover .live-text {
+   display: block;
+}

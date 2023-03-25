@@ -1,18 +1,18 @@
 import '../App.css'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { fetchInfo } from '../utility/appdata';
 import { loadProgBar, toggleCheckbox, loadSensorData } from '../utility/espFucntion';
 import { useNavigate } from 'react-router-dom';
 import { CardFill } from '../accessory/progressbar/FillProgress';
 import { OneProgressCard } from '../accessory/MiniCard';
-import { EspContext } from './MyDashboard';
+import { EspContext, LiveDataContext } from './MyDashboard';
 
 const GetData = () => {
     const {espData,setEspData} = useContext(EspContext);
+    const {liveData,setLiveData} = useContext(LiveDataContext);
     // console.log(espData);
     const navigate = useNavigate();
     // const [espData, setEspData] = useState(initValue);
-    const [repeatedData, setRepeatedData] = useState(false);
 
     function usePrevious(value) {
         const ref = useRef();
@@ -39,14 +39,14 @@ const GetData = () => {
                     if (sent.index === prevData.current) {
                         repeatData++;
                         if (repeatData >= fetchInfo.maxRetry) {
-                            setRepeatedData(true);
+                            setLiveData(false)
                             clearInterval(loadDataInterval);
                         }
                     } else {
                         repeatData = 0;
-                        setRepeatedData(false)
+                        setLiveData(true)
                     }
-                    console.log(sent.index, prevData.current, repeatData,repeatedData);
+                    console.log(sent.index, prevData.current, repeatData,liveData);
                 })
             }, fetchInfo.interval);
 
@@ -69,7 +69,7 @@ const GetData = () => {
             <div id="row text-center">
                 <div className='m-4 mx-auto d-flex flex-column pe-2 w-80 col-lg-12 col-xl-10'>
 
-                    <p className='text-center text-warning'>{repeatedData ? "This may be some old data" : ""}</p>
+                    <p className='text-center text-warning'>{!liveData ? "This may be some old data" : ""}</p>
 
                     <div className='row'>
                         <div className="col-lg-6 mb-4">

@@ -177,8 +177,10 @@ const ScheduleWater = () => {
             .then(()=>{
                 getTankAlert()
                 .then((data)=>{
+                    if(data && data.alerts){
                     setAlerts({alertsMsg:data.alerts.reverse(),markRead:data.read});
                     console.log(data.alerts);
+                    }
                 })
             })
         }

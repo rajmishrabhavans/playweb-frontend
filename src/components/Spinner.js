@@ -6,7 +6,7 @@ export const loadSpinner = () =>{
   spinner= document.getElementById('play-spinner');
 }
 export const startSpinner = () =>{
-  console.trace("Spinner")
+  // console.trace("Spinner")
   spinner.classList.remove('d-none');
 }
 export const stopSpinner = () =>{
