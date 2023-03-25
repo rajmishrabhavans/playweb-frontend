@@ -125,23 +125,6 @@ const SupplyList = () => {
     <>
     <h2 className="text-center text-dark mb-3">Supply List</h2>
     <div className='m-3'>
-      {/* <form onSubmit={handleSubmit}>
-        <div className="row g-3 mb-4">
-          <div className="col-sm-7">
-            <input type="text" className="form-control" onBlur={handleBlur} onChange={handleChange} value={values.name}
-              name='name' placeholder="name" aria-label="City" />
-            <p className='ms-4 mt-1 mb-4 text-danger' >{errors.name && touched.name ? errors.name : ""}</p>
-          </div>
-          <div className="col-sm">
-            <input type="number" className="form-control" onBlur={handleBlur} onChange={handleChange} value={values.room}
-              name='room' placeholder="room" aria-label="State" />
-            <p className='ms-4 mt-1 mb-4 text-danger' >{errors.room && touched.room ? errors.room : ""}</p>
-          </div>
-          <div className="col-sm">
-            <button className='btn btn-primary' type='submit' >Add</button>
-          </div>
-        </div>
-      </form> */}
 
       <div className='mb-3'>
         

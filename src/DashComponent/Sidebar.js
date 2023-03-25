@@ -6,30 +6,29 @@ import { SidebarContext } from './MyDashboard';
 
 function Sidebar() {
     const {sidebarOn,setSidebarStatus}= useContext(SidebarContext)
-
-    // console.log(windowWidth);
+    const [toggleLink,setToggleLink]= useState(false);
         
     const changeStyle = () => {
+        console.log(sidebarOn);
         const varr = document.getElementById('accordionSidebar')
         varr.classList.toggle("toggled");
-        console.log(varr.classList.contains('toggled'));
+        // console.log(varr.classList.contains('toggled'));
         if(varr.classList.contains('toggled')){
             setSidebarStatus(false)
         }else{
             setSidebarStatus(true)
         }
-    };
+    };   
 
     useEffect(() => {
-
-        const sidelinks= document.getElementsByClassName("sidelink")
-        // console.log(sidelinks);
-        Array.from(sidelinks).forEach((elem)=>{
-        elem.addEventListener('click', changeStyle)
-        // const windowWidth = useRef(window.innerWidth)
-    })
+        console.log("Toggle Link:",toggleLink);
+        if(window.screen.width>=767 && toggleLink) {
+            setToggleLink(false)
+        }else if(window.screen.width<767 && !toggleLink){
+            setToggleLink(true)
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [sidebarOn])
     
 
     return (
@@ -57,7 +56,7 @@ function Sidebar() {
 
                         {/*  <!-- Nav Item - Dashboard --> */}
                         <li className="nav-item">
-                            <Link className="nav-link sidelink" to="/">
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to="/">
                                 <i className="fas fa-fw fa-tachometer-alt"></i>
                                 <span>Dashboard</span>
                             </Link>
@@ -73,7 +72,7 @@ function Sidebar() {
 
                         {/*  <!-- Nav Item - Pages Collapse Menu --> */}
                         <li className="nav-item">
-                            <Link className="nav-link sidelink" to='/users'>
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to='/users'>
                                 <i className="fas fa-fw fa-cog"></i>
                                 <span>User Details</span>
                             </Link>
@@ -81,7 +80,7 @@ function Sidebar() {
 
                         {/* <!-- Nav Item - Utilities Collapse Menu --> */}
                         <li className="nav-item">
-                            <Link className="nav-link sidelink" to='/supplyList'>
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to='/supplyList'>
                                 <i className="fas fa-fw fa-wrench"></i>
                                 <span>Supply List</span>
                             </Link>
@@ -98,7 +97,7 @@ function Sidebar() {
                         {/*  <!-- Nav Item - Pages Collapse Menu --> */}
                         <li className="nav-item">
                         
-                            <Link className="nav-link sidelink" to="/getdata">
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to="/getdata">
                                 <i className="fas fa-fw fa-folder"></i>
                                 <span>Manual</span>
                             </Link>
@@ -106,7 +105,7 @@ function Sidebar() {
 
                         {/* <!-- Nav Item - Charts --> */}
                         <li className="nav-item">
-                            <Link className="nav-link sidelink" to="/schedule">
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to="/schedule">
                                 <i className="fas fa-fw fa-folder"></i>
                                 <span>Automatic</span>
                             </Link>
@@ -122,7 +121,7 @@ function Sidebar() {
 
                         {/*  <!-- Nav Item - Pages Collapse Menu --> */}
                         <li className="nav-item disabled">
-                            <a className="nav-link sidelink" href=' '>
+                            <a className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} href=' '>
                                 <i className="fas fa-fw fa-cog"></i>
                                 <span>System Health</span>
                             </a>
@@ -130,7 +129,7 @@ function Sidebar() {
 
                         {/* <!-- Nav Item - Utilities Collapse Menu --> */}
                         <li className="nav-item">
-                            <Link className="nav-link sidelink" to='/configure'>
+                            <Link className="nav-link sidelink" onClick={toggleLink?changeStyle:()=>{}} to='/configure'>
                                 <i className="fas fa-fw fa-wrench"></i>
                                 <span>Configure</span>
                             </Link>

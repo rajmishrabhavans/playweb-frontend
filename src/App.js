@@ -16,12 +16,9 @@ import MyDashboard from './DashComponent/MyDashboard';
 import Spinner from './components/Spinner';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
-<<<<<<< HEAD
 import Access from './components/AccessPage';
 import InternalServerError from './components/InternalServerError';
-=======
 import { fetchApi } from './utility/apiHelper';
->>>>>>> afc54fb32823503e0a4d2e575d008e357ceb7807
 
 export const loggedInContext = createContext("");
 function App() {
