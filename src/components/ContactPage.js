@@ -129,7 +129,7 @@ const ContactPage = () => {
                         <p className='ms-4 mt-1 mb-4 text-danger' >{errors.message && touched.message ? errors.message : ""}</p>
                     </div>
                     <div className="col-12 text-center">
-                      <button type="submit" className="btn btn-primary mt-3">Submit</button>
+                      <button type="submit" className="btn btn-primary">Submit</button>
                     </div>
                   </form>
             </div>

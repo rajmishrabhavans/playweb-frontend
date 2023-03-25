@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import contactImg from '../images/undraw_rocket.svg'
 import myImg from '../images/logo4.png'
@@ -6,6 +6,9 @@ import { SidebarContext } from './MyDashboard';
 
 function Sidebar() {
     const {sidebarOn,setSidebarStatus}= useContext(SidebarContext)
+
+    // console.log(windowWidth);
+        
     const changeStyle = () => {
         const varr = document.getElementById('accordionSidebar')
         varr.classList.toggle("toggled");
@@ -18,10 +21,12 @@ function Sidebar() {
     };
 
     useEffect(() => {
-      const sidelinks= document.getElementsByClassName("sidelink")
-    //   console.log(sidelinks);
-      Array.from(sidelinks).forEach((elem)=>{
+
+        const sidelinks= document.getElementsByClassName("sidelink")
+        // console.log(sidelinks);
+        Array.from(sidelinks).forEach((elem)=>{
         elem.addEventListener('click', changeStyle)
+        // const windowWidth = useRef(window.innerWidth)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -34,7 +39,7 @@ function Sidebar() {
                 <div id="wrapper" style={{height:'100%'}} >
                     <div className={`${sidebarOn?'sidebar-bg':''}`} onClick={changeStyle}></div>
                     {/*  <!-- Sidebar --> */}
-                    <ul className="navbar-nav sidebar sidebar-dark sidebar-menu toggled" id="accordionSidebar">
+                    <ul className="navbar-nav sidebar sidebar-dark sidebar-menu" id="accordionSidebar">
 
                         {/*  <!-- Sidebar - Brand --> */}
                         <span className="sidebar-brand d-flex align-items-center justify-content-center">
@@ -48,7 +53,7 @@ function Sidebar() {
                         </span>
 
                         {/*   <!-- Divider --> */}
-                        <hr className="sidebar-divider my-0" />
+                        {/* <hr className="sidebar-divider my-0" /> */}
 
                         {/*  <!-- Nav Item - Dashboard --> */}
                         <li className="nav-item">
