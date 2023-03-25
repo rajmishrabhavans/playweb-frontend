@@ -9,13 +9,14 @@ import ContactPage from './components/ContactPage';
 import {Routes, Route} from "react-router-dom";
 import ErrorPage from './components/ErrorPage';
 import BackPage from './components/BackPage';
-import AlertMsg from './components/AlertMsg';
+import AlertMsg, { showModalAlert } from './components/AlertMsg';
 import VerificationPage from './components/VerificationPage';
 import ForgotPass from './components/ForgotPass';
 import MyDashboard from './DashComponent/MyDashboard';
 import Spinner from './components/Spinner';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
+import { fetchApi } from './utility/apiHelper';
 
 export const loggedInContext = createContext("");
 function App() {
@@ -24,6 +25,16 @@ function App() {
   useEffect(()=>{
     if(localStorage.getItem('loggedin') && Cookies.get('jwtoken')){
       setLoggedIn(true);
+      fetchApi("/testConnection")
+      .then((data)=>{
+        if(!data){
+          if(!navigator.onLine){
+             showModalAlert("Check your Internet connection");
+          }else{
+            showModalAlert("Problem occoured connecting to server")
+          }
+        }
+      })
     }
   },[])
   

@@ -9,8 +9,10 @@ export const TankAlerts = () => {
     const markRead=()=>{
         getTankAlert({markRead:true})
         .then((data)=>{
+            if(data && data.alerts){
             setAlerts({...alerts,markRead:alerts.alertsMsg.length});
             console.log(data.alerts);
+            }
         })
         
     }
