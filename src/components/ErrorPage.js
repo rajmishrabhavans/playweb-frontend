@@ -5,7 +5,7 @@ const ErrorPage = () => {
   return (
     <>
         
-    <div className="container-fluid main_content">
+    <div className="container-fluid main_content mb-4">
         <div className="row">
             <div className="col-md-10 col-12 mx-auto">
                 <div className="row justify-content-center">

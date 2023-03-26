@@ -5,11 +5,12 @@ import { loadProgBar, toggleCheckbox, loadSensorData } from '../utility/espFucnt
 import { useNavigate } from 'react-router-dom';
 import { CardFill } from '../accessory/progressbar/FillProgress';
 import { OneProgressCard } from '../accessory/MiniCard';
-import { EspContext, LiveDataContext } from './MyDashboard';
+import { EspContext, LiveDataContext, TotalVolumeContext } from './MyDashboard';
 
 const GetData = () => {
     const {espData,setEspData} = useContext(EspContext);
     const {liveData,setLiveData} = useContext(LiveDataContext);
+    const {totalVolume}= useContext(TotalVolumeContext)
     // console.log(espData);
     const navigate = useNavigate();
     // const [espData, setEspData] = useState(initValue);
@@ -118,8 +119,8 @@ const GetData = () => {
 
                     
     <div className="row mt-4">
-          <OneProgressCard color= 'info' title= 'Upper tank volume' currVol= {espData.UTVolume} totalVol= {1200}/>
-          <OneProgressCard color= 'info' title= 'Lower tank volume' currVol= {espData.LTVolume} totalVol= {1200}/>
+          <OneProgressCard color= 'info' title= 'Upper tank volume' currVol= {espData.UTVolume} totalVol= {totalVolume.UTTotalVolume}/>
+          <OneProgressCard color= 'info' title= 'Lower tank volume' currVol= {espData.LTVolume} totalVol= {totalVolume.LTTotalVolume}/>
       </div>
                     
                     <div className='mt-4 row'>

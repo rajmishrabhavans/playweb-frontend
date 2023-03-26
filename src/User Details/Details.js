@@ -9,12 +9,12 @@ const Details = () => {
   const {usersdata, setUserdata} = useContext(UsersContext)
   
   const loadSupplyList= async()=>{
+    console.log(usersdata)
     if(usersdata.length>0) return;
     const slist= await getSupplyList();
     console.log(slist)
     if(slist){
-      const result = slist[id-1];
-      setUserdata(result);
+      setUserdata(slist);
     }
   }
   
@@ -44,8 +44,8 @@ const Details = () => {
               <div className='col-sm-4 bg-info rounded-left'>
                 <div className='card-block text-center text-white'>
                   <i className='fas fa-user-tie fa-7x mt-5'></i>
-                  <h2 className='font-weight-bold mt-4'>{usersdata.name}</h2>
-                  <p>{usersdata.wing+"-"+usersdata.room}</p>
+                  <h2 className='font-weight-bold mt-4'>{usersdata[id-1].name}</h2>
+                  <p>{usersdata[id-1].wing+"-"+usersdata[id-1].room}</p>
                   <NavLink to={`/users/edit/${id}`}><i className='far fa-edit fa-2x mb-4'></i></NavLink>
                 </div>
               </div>
@@ -55,11 +55,11 @@ const Details = () => {
                 <div className='row'>
                   <div className='col-sm-6'>
                     <p className='font-weight-bold'>Email: </p>
-                    <h6 className='text-mutedS'>{usersdata.email}</h6>
+                    <h6 className='text-mutedS'>{usersdata[id-1].email}</h6>
                   </div>
                   <div className='col-sm-6'>
                     <p className='font-weight-bold'>Phone: </p>
-                    <h6 className='text-mutedS'>{usersdata.mobile}</h6>
+                    <h6 className='text-mutedS'>{usersdata[id-1].mobile}</h6>
                   </div>
                 </div>
                 <h4 className='mt-3'>Others</h4>
@@ -67,11 +67,11 @@ const Details = () => {
                 <div className='row'>
                 <div className='col-sm-6'>
                     <p className='font-weight-bold'>Ownership: </p>
-                    <h6 className='text-mutedS'>{usersdata.ownership}</h6>
+                    <h6 className='text-mutedS'>{usersdata[id-1].ownership}</h6>
                   </div>
                   <div className='col-sm-6'>
                     <p className='font-weight-bold'>Status: </p>
-                    <h6 className='text-mutedS'>{usersdata.status}</h6>
+                    <h6 className='text-mutedS'>{usersdata[id-1].status}</h6>
                   </div>
                 </div>
               </div>

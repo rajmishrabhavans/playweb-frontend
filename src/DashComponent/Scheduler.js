@@ -1,8 +1,8 @@
-import { showSimpleAlert } from "../components/AlertMsg";
+import { showModalAlert, showSimpleAlert } from "../components/AlertMsg";
 import { getTankAlert, saveTankAlerts } from "../utility/admin";
-import { getHomeData, getSensorData, getSupplyList, updateHomeData, updateSupplyDetails } from "../utility/espFucntion";
-import React, { createContext, useContext, useEffect, useReducer, useState } from 'react'
-import { AlertContext } from "./MyDashboard";
+import { getHomeData, getSensorData, getSupplyList, loadEspConfigData, loadSensorData, updateHomeData, updateSensorData, updateSupplyDetails } from "../utility/espFucntion";
+import React, { createContext, useContext, useEffect, useReducer, useRef, useState } from 'react'
+import { AlertContext, EspContext } from "./MyDashboard";
     
     // supplyReducer for maintaining timer
     export const supplyReducer = (supplyInfo, action) => {
@@ -112,16 +112,17 @@ import { AlertContext } from "./MyDashboard";
     // , [supplyInfo]);
 
     // stop timer by reseting time values
-    export const stopTimer = ({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList}) => {
+    export const stopTimer = ({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList}) => {
         setSupplyInfo({ type: "resetStartAfter" });
         setSupplyInfo({ type: "resetRemainQuantity" });
         setSupplyInfo({ type: "resetRemainTime" });
         setSupplyInfo({ type: "setTimerOn", value: false });
+        updateSensorData({ motorOn: false });
         if (supplyInfo.remainTime > 0 && supplyInfo.startAfter < 1) {
-            timerMsg = `Motor Stopped`;
+            setTimerMsg(`Motor Stopped`)
             showSimpleAlert("Motor Stopped");
         } else {
-            timerMsg = `Timer Stopped`;
+            setTimerMsg(`Timer Stopped`)
             showSimpleAlert("Timer Stopped");
         }
         // updateSensorData({ motorOn: false });
@@ -138,9 +139,11 @@ import { AlertContext } from "./MyDashboard";
     export const SupplyListProvider= createContext("")
     export const SupplyInfoProvider= createContext("")
     export const TimerMsgProvider= createContext("")
+    
     export const Scheduler = ({children}) => {
         const {setAlerts}= useContext(AlertContext)
         const [timerMsg, setTimerMsg] = useState("");
+        const {espData,setEspData} = useContext(EspContext);
         const [scheduleTime, setScheduleTime] = useState({startTime: '',stopAfter: '',});
         const [waterVolume, setWaterVolume] = useState({ currUTVolume: 0, currLTVolume: 0, prevUTVolume: 0, prevLTVolume: 0 });
         const [supplyBy, setSupplyBy] = useState('time');
@@ -149,16 +152,43 @@ import { AlertContext } from "./MyDashboard";
             { room: 1, name: 'Room1', supplyOn: false, supplyStatus: 0, waterPassed: 0 },
             { room: 2, name: 'Room2', supplyOn: false, supplyStatus: 0, waterPassed: 0 },
         ]);
+        // const [motorOn,setMotorOn]= useState(false);
         const [supplyInfo, setSupplyInfo] = useReducer(supplyReducer, { startAfter: 0, remainTime: 0, remainQuantity: 0, remainRoom: 0, timerOn: false, supplyType: 'T' });
-    
+        let minUTvalue = useRef(11);
+        useEffect(() => {
+            loadSensorData(setEspData);
+            loadEspConfigData()
+            .then((data) => {
+                if (data) {
+                    minUTvalue.current= data.udata.minFill;
+                }
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+        
         useEffect(() => {
             let intervalId;
             // console.log(supplyInfo.remainTime, supplyInfo.remainRoom);
             
+            if((supplyInfo.remainQuantity>=0 || supplyInfo.remainTime>=0) && supplyInfo.timerOn && supplyInfo.startAfter<0){
+                loadSensorData(setEspData);
+                // console.log("Tank Percent:",espData.upperTank,minUTvalue,espData.upperTank<=minUTvalue.current);
+                if(espData.lowerTank<=10 && espData.upperTank<=minUTvalue.current){
+                    // console.log("Both water tanks are empty!");
+                    stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
+                    showModalAlert("Both water tanks are empty!");
+                }
+                if(minUTvalue.current>=espData.upperTank && espData.lowerTank>=10){
+                    updateSensorData({ motorOn: true });
+                }else if(espData.lowerTank<10){
+                    updateSensorData({ motorOn: false });
+                }
+            }
             if(!(supplyInfo.remainQuantity>=0 || supplyInfo.remainTime>=0 || supplyInfo.remainRoom>=0)){
                 console.log(supplyInfo);
                 const timeStamp= new Date().toISOString()
                 updateSupplyDetails({lastSupply:timeStamp})
+                //save last supply and send notification
                 saveTankAlerts({timeStamp,type:"supply",message:"Supplied water to home tank"})
                 .then(()=>{
                     getTankAlert()
@@ -170,12 +200,13 @@ import { AlertContext } from "./MyDashboard";
                     })
                 })
             }
+            //countdown of timer before supplying
             if (supplyInfo.startAfter >= 0 && supplyInfo.timerOn) {
                 if (supplyInfo.remainTime >= 0 || supplyInfo.remainQuantity >= 0) {
                     setTimerMsg(`Motor will start in ${formattedTime(supplyInfo.startAfter)}`)
                     intervalId = setInterval(() => {
                         setSupplyInfo({ type: "decStartAfter" });
-                        console.log(supplyInfo.startAfter);
+                        // console.log(supplyInfo.startAfter);
                         if (supplyInfo.startAfter === 0) {
                             setSupplyInfo({ type: "decStartAfter" });
                             if (supplyInfo.remainTime <= 0) {
@@ -196,7 +227,9 @@ import { AlertContext } from "./MyDashboard";
                         }
                     }, 1000);
                 }
+            //while suplying the water
             } else if (supplyInfo.remainTime >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
+
                 const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
                 if (currentRoom) {
                     getHomeData().then((rdata) => {
@@ -239,12 +272,12 @@ import { AlertContext } from "./MyDashboard";
                             }
                             else {
                                 setSupplyInfo({ type: "decRemainTime" });
-                                stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList});
+                                stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
                             }
                         }
                     } else {
                         setSupplyInfo({ type: "decRemainRoom" });
-                        stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList});
+                        stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
                     }
                 }, 1000);
             } else if (supplyInfo.remainQuantity >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
@@ -321,12 +354,12 @@ import { AlertContext } from "./MyDashboard";
                             }
                             else {
                                 // setSupplyInfo({ type: "decRemainTime" });
-                                stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList});
+                                stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
                             }
                         }
                     } else {
                         setSupplyInfo({ type: "decRemainRoom" });
-                        stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList});
+                        stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
                     }
                 }, 1000);
             }

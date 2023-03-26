@@ -4,6 +4,7 @@ const Cookies = require('js-cookie');
 
 //to get the admin data from the backend
 export const getAdminData = async() =>{
+    console.log("cookie:",Cookies.get('jwtoken'));
     try {
         // console.log(appdata);
         const res= await fetch(appdata.baseUrl+"/getData",{

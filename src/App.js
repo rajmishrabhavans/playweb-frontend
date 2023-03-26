@@ -39,6 +39,15 @@ function App() {
       })
     }
   },[])
+
+  const UseNav=({children})=>{
+    return(
+      <>
+        <Navbar/>
+        {children}
+      </>
+    )
+  }
   
   return (
     
@@ -54,15 +63,15 @@ function App() {
     :
 
     <>
-    <Navbar/>
+    {/* <Navbar/> */}
     <Routes>
-      <Route exact path="/" element={<Home />} />
-      <Route path="/about" element={<BackPage Element= {About}/>} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/login" element={<BackPage Element= {Login}/>} />
-      <Route path="/register" element={<BackPage Element= {Register}/>} />
-      <Route path="/forgotPassword" element={<BackPage Element= {ForgotPass}/>} />
-      <Route path="/verify" element={<BackPage Element= {VerificationPage}/>} />
+      <Route exact path="/" element={<UseNav><Home /></UseNav>} />
+      <Route path="/about" element={<UseNav><About/></UseNav>} />
+      <Route path="/contact" element={<UseNav><ContactPage /></UseNav>} />
+      <Route path="/login" element={<UseNav><BackPage Element= {Login}/></UseNav>} />
+      <Route path="/register" element={<UseNav><BackPage Element= {Register}/></UseNav>} />
+      <Route path="/forgotPassword" element={<UseNav><BackPage Element= {ForgotPass} /> </UseNav> } />
+      <Route path="/verify" element={<UseNav><BackPage Element= {VerificationPage} /> </UseNav> } />
       <Route path="/*" element={<ErrorPage/>} />
       <Route path="/accessdenied" element={<Access />} />
       <Route path='/servererror' element={<InternalServerError />} />

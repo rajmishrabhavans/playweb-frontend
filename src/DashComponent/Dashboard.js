@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react'
 // import { CurrTable } from '../accessory/CurrTable';
 // import { MiniCard, OneProgressCard } from '../accessory/MiniCard';
 import { CardFill} from '../accessory/progressbar/FillProgress';
-import { EspContext, LiveDataContext } from './MyDashboard';
+import { EspContext, LiveDataContext, TotalVolumeContext } from './MyDashboard';
 import { fetchInfo } from '../utility/appdata';
 import { getSupplyList2, loadProgBar, loadSensorData } from '../utility/espFucntion';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ import moment from 'moment/moment';
 const Dashboard = () => {
   const {espData,setEspData} = useContext(EspContext);
   const {liveData,setLiveData} = useContext(LiveDataContext);
+  const {totalVolume}= useContext(TotalVolumeContext)
   const navigate = useNavigate();
 
 function usePrevious(value) {
@@ -100,8 +101,8 @@ const lastSupply= useRef("not filled")
 
                       
     <div className="row mt-4">
-          <OneProgressCard color= 'info' title= 'Upper tank volume' currVol= {espData.UTVolume} totalVol= {1200}/>
-          <OneProgressCard color= 'info' title= 'Lower tank volume' currVol= {espData.LTVolume} totalVol= {1200}/>
+          <OneProgressCard color= 'info' title= 'Upper tank volume' currVol= {espData.UTVolume} totalVol= {totalVolume.UTTotalVolume}/>
+          <OneProgressCard color= 'info' title= 'Lower tank volume' currVol= {espData.LTVolume} totalVol= {totalVolume.LTTotalVolume}/>
       </div>
 
         {/* <CurrTable/> */}

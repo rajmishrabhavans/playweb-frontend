@@ -15,13 +15,13 @@ const ScheduleWater = () => {
     const {homeData,setHomeData}= useContext(HomeDataProvider)
     const {supplyList,setSupplyList}= useContext(SupplyListProvider)
     const {supplyInfo,setSupplyInfo}= useContext(SupplyInfoProvider)
-    const {timerMsg}= useContext(TimerMsgProvider)
+    const {timerMsg,setTimerMsg}= useContext(TimerMsgProvider)
 
 
     
     // start timer when time is scheduled and confirmed
     const startTimer = () => {
-        if (supplyInfo.timerOn) stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList});
+        if (supplyInfo.timerOn) stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
         const { startTime, stopAfter } = scheduleTime;
         // console.log(startTime,stopAfter);
         if (!startTime) {
@@ -125,7 +125,7 @@ const ScheduleWater = () => {
                         <input className="me-4 form-control mb-2" type="datetime-local" onChange={e => setScheduleTime({ ...scheduleTime, startTime: e.target.value })}
                             value={scheduleTime.startTime} id="motorStartTime" name="motorStartTime" />
 
-                        <div className="mb-1" onChange={e => { setSupplyBy(e.target.value) }} value={supplyBy}>
+                        <div className="mb-1" onChange={e => { setSupplyBy(e.target.value)}} value={supplyBy}>
                             <input className="" type="radio" name="supplyBy"
                                 id="supplyBy1" value="time" defaultChecked />
                             <label className="ps-1" htmlFor="supplyBy1">Time</label>
@@ -143,7 +143,7 @@ const ScheduleWater = () => {
 
                         <div className="container d-flex justify-content-around flex-sm-row flex-column">
                             <input className="btn btn-success w-70 mb-2" type="submit" value="Set Timer" onClick={()=>startTimer()} />
-                            <input className="btn btn-danger w-70 mb-2" type="submit" value="Stop Timer" onClick={()=>stopTimer({setSupplyInfo,supplyInfo,timerMsg,homeData,setHomeData,supplyList,setSupplyList})} />
+                            <input className="btn btn-danger w-70 mb-2" type="submit" value="Stop Timer" onClick={()=>stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList})} />
                         </div>
                         <div id="countdown"></div>
                     </div>

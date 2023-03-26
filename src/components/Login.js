@@ -50,6 +50,10 @@ const Login = () => {
         const data= await res.json();
 
         if(res.status>201 || !data){
+            if(res.status===403){
+                navigate("/accessdenied")
+                throw new Error("UnAuthorized Access");
+            }
             if(data && data.error==='Incorrect password'){
                 showModalAlert("Incorrect password");
             }else{
@@ -84,6 +88,7 @@ const Login = () => {
             if(!navigator.onLine){
                 showModalAlert("Check Your network!");
             }else{
+                if(!error==="UnAuthorized Access")
                 showModalAlert("Failed to Login");
             }
             console.log(error);

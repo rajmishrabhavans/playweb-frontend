@@ -133,9 +133,11 @@ export const setEspConfigData = async (configData) => {
     console.log(configData);
     // console.trace()
     console.log(data.msg);
+    return data;
 
   } catch (error) {
     console.log(error);
+    return false;
   }
 }
 

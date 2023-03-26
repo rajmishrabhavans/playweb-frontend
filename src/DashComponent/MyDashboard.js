@@ -40,6 +40,7 @@ export const AdminContext = createContext("");
 export const UsersContext = createContext("");
 export const AlertContext = createContext("");
 export const SidebarContext = createContext("");
+export const TotalVolumeContext = createContext("");
 function MyDashboard() {
   const navigate = useNavigate();
   const [liveData, setLiveData] = useState(false);
@@ -48,6 +49,7 @@ function MyDashboard() {
   const [adminData, setAdminData] = useState(adminInfo);
   const [sidebarOn, setSidebarStatus] = useState(false)
   const [usersdata, setUserdata] = useState([])
+  const [totalVolume,setTotalVolume]= useState({UTTotalVolume:1200,LTTotalVolume:1200})
 
   let loadcomp = useRef()
   useEffect(() => {
@@ -88,6 +90,7 @@ function MyDashboard() {
           <AlertContext.Provider value={{ alerts, setAlerts }}>
             <SidebarContext.Provider value={{ sidebarOn, setSidebarStatus }}>
               <UsersContext.Provider value={{ usersdata, setUserdata }}>
+              <TotalVolumeContext.Provider value={{ totalVolume,setTotalVolume }}>
               <Scheduler>
                 <div className="mysidebar">
                   <div className=" bg-gradient-primary">
@@ -116,6 +119,7 @@ function MyDashboard() {
                   </main>
                 </div>
                 </Scheduler>
+                </TotalVolumeContext.Provider>
               </UsersContext.Provider>
             </SidebarContext.Provider>
           </AlertContext.Provider>
