@@ -38,7 +38,7 @@ function Sidebar() {
                 <div id="wrapper" style={{height:'100%'}} >
                     <div className={`${sidebarOn?'sidebar-bg':''}`} onClick={changeStyle}></div>
                     {/*  <!-- Sidebar --> */}
-                    <ul className="navbar-nav sidebar sidebar-dark sidebar-menu toggled" id="accordionSidebar">
+                    <ul className="navbar-nav sidebar fixed_sidebar sidebar-dark sidebar-menu toggled" id="accordionSidebar">
 
                         {/*  <!-- Sidebar - Brand --> */}
                         <span className="sidebar-brand d-flex align-items-center justify-content-center">

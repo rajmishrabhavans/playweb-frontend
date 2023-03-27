@@ -11282,7 +11282,7 @@ body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .sidebar .nav-item .nav-link {
     margin-left: 47px;
   }
