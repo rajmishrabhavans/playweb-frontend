@@ -70,7 +70,7 @@ const Topbar = (status) => {
                 <nav className="navbar navbar-expand fixed-top navbar-light bg-white topbar mb-4 static-top shadow" style={{zIndex:"5"}}>
 
                     {/*  <!-- Sidebar Toggle (Topbar) --> */}
-                    <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3" onClick={changeStyle}>
+                    <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-1" onClick={changeStyle}>
                         <i className="fa fa-bars"></i>
                     </button>
 
@@ -79,7 +79,7 @@ const Topbar = (status) => {
 
                         {/*  <!-- Nav Item - Alerts --> */}
                         <li className="nav-item dropdown no-arrow mx-1">
-                            <a className="nav-link dropdown-toggle" href=" " id="alertsDropdown" role="button"
+                            <a className="nav-link dropdown-toggle px-0" href=" " id="alertsDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i className="fas fa-bell fa-fw"></i>
                                 {/*  <!-- Counter - Alerts --> */}
@@ -112,7 +112,7 @@ const Topbar = (status) => {
                             </div>
                         </li>
 
-                        <div className="topbar-divider d-sm-block"></div>
+                        <div className="topbar-divider mx-2 mx-sm-3 d-sm-block"></div>
 
                         <div className='live-logo'> 
                         {liveData?
@@ -128,11 +128,11 @@ const Topbar = (status) => {
                         }
                         </div>
                         
-                        <div className="topbar-divider d-sm-block"></div>
+                        <div className="topbar-divider mx-2 mx-sm-3 d-sm-block"></div>
 
                         {/* <!-- Nav Item - User Information --> */}
                         <li className="nav-item dropdown no-arrow placeholder-glow">
-                            <a className="nav-link dropdown-toggle" href=" " id="userDropdown" role="button"
+                            <a className="nav-link dropdown-toggle ps-0" href=" " id="userDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span className="mr-2 d-lg-inline text-gray-600 small glowme">{adminData.name}</span>
                                 <img className="img-profile rounded-circle glowme" alt='proficPic'

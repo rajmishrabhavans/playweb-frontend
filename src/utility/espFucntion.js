@@ -155,6 +155,33 @@ export const fetchEspConfigData = async () => {
     return false;
 }
 
+    //calculate volume of truncated cone
+  const tConeTankVolume= (r1,r2,h)=>{
+    const volume =  (1/3.0) * Math.PI * h * ((r1*r1) + r1 * r2 + (r2*r2));
+    return Math.abs(volume);
+  }
+  //calculate volume of cuboid
+  const tCuboidTankVolume= (l,w,h)=>{
+      return  Math.abs(l*w*h);
+  }
+
+export const loadTotalVolume=(values,setTotalVolume)=>{
+  let UTVolume,LTVolume;
+  if(values.UTShape==="cuboid"){
+      UTVolume= tCuboidTankVolume(values.UTR1,values.UTR2,values.UTDepth);
+  }else if(values.UTShape==="frustum"){
+      UTVolume= tConeTankVolume(values.UTR1,values.UTR2,values.UTDepth);
+  }if(values.LTShape==="cuboid"){
+      LTVolume= tCuboidTankVolume(values.LTR1,values.LTR2,values.LTDepth);
+  }else if(values.LTShape==="frustum"){
+      LTVolume= tConeTankVolume(values.LTR1,values.LTR2,values.LTDepth);
+  }
+  if(!UTVolume) UTVolume= 1200
+  if(!LTVolume) LTVolume= 1200
+  setTotalVolume({UTTotalVolume:Math.round(UTVolume),LTTotalVolume:Math.round(LTVolume)})
+
+}
+
 // saves the supply list to the database
 export const saveSupplyList = async (supplyList) => {
   try {

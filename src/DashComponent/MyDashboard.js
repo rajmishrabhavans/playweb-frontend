@@ -21,8 +21,9 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { adminInfo } from '../utility/appdata';
 import { loadAdminData } from '../utility/admin';
 import { TankAlerts } from './TankAlerts';
-import { fetchEspConfigData } from '../utility/espFucntion';
+import { fetchEspConfigData, loadTotalVolume } from '../utility/espFucntion';
 import Scheduler from './Scheduler';
+import { fetchApi } from '../utility/apiHelper';
 
 let initValue = {
   index: 0,
@@ -61,7 +62,15 @@ function MyDashboard() {
     //getting asmin info after the page is loaded
     if (!adminInfo.creationdate) {
       loadcomp.current.forEach((elem) => { elem.classList.add('placeholder'); })
-      fetchEspConfigData()
+      fetchEspConfigData().then(async()=>{
+        const res = await fetchApi("/getEspConfigData")
+        
+        console.log("getEspConfigData: ");
+        console.log(res);
+        if(res){
+          loadTotalVolume(res.udata,setTotalVolume)
+        }
+      })
       loadAdminData()
         .then((data) => {
           if (data)
