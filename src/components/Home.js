@@ -1,10 +1,26 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/Home.css'
-
+import Typed from 'typed.js'
 import MultipleFlipCard from './MultipleFlipCard'
 
 const Home = () => {
+    const el = useRef(null);
+
+    useEffect(() => {
+        const typed = new Typed(el.current, {
+            strings: ['Hello there !', 'Welcome to Tank Automation.', 'Want to Automate your Water Tank? ^3000'],
+            typeSpeed: 130,
+            // backSpeed: 100,
+            smartBackspace: true, // Default value
+            loop: true,
+            showCursor: true,
+        });
+
+        return () => {
+            typed.destroy();
+        }
+    }, []);
 
     return (
         <>
@@ -13,8 +29,8 @@ const Home = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-7 mx-auto text-center">
-                            <p className='h2 text-white fs-10'>Tank Automation</p>
-                            <p className="fs-5 text-white my-3">Tank Automation provides equitable water supply, reliability, completely visibility into your tanks, operate automatically, flexibility and it reduces the wastage of water</p>
+                            <span className='h2 text-white sm-mt-3' ref={el} style={{fontSize: "40px"}}></span>
+                            <p className="fs-5 text-white ">Tank Automation provides equitable water supply, reliability, completely visibility into your tanks, operate automatically, flexibility and it reduces the wastage of water</p>
                             <Link to="/contact" className="btn me-2 btn-primary">Contact Us </Link>
                         </div>
                     </div>

@@ -50,10 +50,10 @@ return <div className="card text-bg-white mb-3" >
         </div>
   </div>
   <div className="mb-1 mx-2 text-center small">
-    <span className="mr-2">
+    <span className="me-2">
         <i className="fas fa-circle text-primary"></i> Filled
     </span>
-    <span className="mr-2">
+    <span className="me-2">
         <i className="fas fa-circle text-secondary"></i> Empty
     </span>
   </div>

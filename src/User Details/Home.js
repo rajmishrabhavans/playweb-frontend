@@ -53,7 +53,7 @@ const Home = (props) => {
             </td>
             <td className="text-center">{props.Wing}-{props.Room}</td>
             <td className="text-center">
-                <div className={`badge badge-${props.Color}`}>{props.Status}</div>
+                <div className={`badge bg-${props.Color}`}>{props.Status}</div>
             </td>
             <td className="text-center">
               <NavLink to={`/users/view/${props.ID}`}><button className="btn btn-primary ms-2 mt-1"><i className="fas fa-eye"></i></button></NavLink>
@@ -81,7 +81,7 @@ const Home = (props) => {
     <h2 className="text-center text-dark mb-3">User Details</h2>
     <div className="mt-5">
       <div className="container">
-        <div className="add_btn mt-2 mb-2 text-right">
+        <div className="d-flex align-items-end justify-content-end">
           <NavLink to="/user/register" className="btn btn-primary">Add data</NavLink>
         </div>
       </div>

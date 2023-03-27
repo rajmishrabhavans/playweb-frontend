@@ -174,3 +174,9 @@ section {
   top: 0;
   right: 0;
 }
+
+/* Typed cursor css */
+.typed-cursor {
+  color: #a2d036;
+  font-size: 40px;
+}

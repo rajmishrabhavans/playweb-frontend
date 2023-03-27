@@ -70,12 +70,12 @@ const Topbar = (status) => {
                 <nav className="navbar navbar-expand fixed-top navbar-light bg-white topbar mb-4 static-top shadow" style={{zIndex:"5"}}>
 
                     {/*  <!-- Sidebar Toggle (Topbar) --> */}
-                    <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-1" onClick={changeStyle}>
+                    <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle me-1" onClick={changeStyle}>
                         <i className="fa fa-bars"></i>
                     </button>
 
                     {/*  <!-- Topbar Navbar --> */}
-                    <ul className="navbar-nav ml-auto">
+                    <ul className="navbar-nav ms-auto">
 
                         {/*  <!-- Nav Item - Alerts --> */}
                         <li className="nav-item dropdown no-arrow mx-1">
@@ -95,7 +95,7 @@ const Topbar = (status) => {
                             {alerts && alerts.alertsMsg && alerts.alertsMsg.slice(0,3).map((alert,index)=>{
                                 return(
                                 <a key={index} className={`dropdown-item d-flex align-items-center ${(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)>index?'fw-bold':''}`} href=" ">
-                                    <div className="mr-3">
+                                    <div className="me-3">
                                         <div className="icon-circle bg-primary">
                                             <i className="fas fa-file-alt text-white"></i>
                                         </div>
@@ -134,7 +134,7 @@ const Topbar = (status) => {
                         <li className="nav-item dropdown no-arrow placeholder-glow">
                             <a className="nav-link dropdown-toggle ps-0" href=" " id="userDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span className="mr-2 d-lg-inline text-gray-600 small glowme">{adminData.name}</span>
+                                <span className="me-2 d-lg-inline text-gray-600 small glowme">{adminData.name}</span>
                                 <img className="img-profile rounded-circle glowme" alt='proficPic'
                                     src={adminData.profilePic} />
                             </a>
@@ -142,16 +142,16 @@ const Topbar = (status) => {
                             <div className="dropdown-menu dropdown-menu-end shadow animated--grow-in" style={{maxWidth:"120px"}}
                                 aria-labelledby="userDropdown">
                                 <Link className="dropdown-item" to="profile">
-                                    <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <i className="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
                                     Profile
                                 </Link>
                                 <Link className="dropdown-item" to="configure">
-                                    <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <i className="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
                                     Settings
                                 </Link>
                                 <div className="dropdown-divider"></div>
                                 <span className="dropdown-item" onClick={signoutUser}>
-                                    <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <i className="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
                                     Logout
                                 </span>
                             </div>

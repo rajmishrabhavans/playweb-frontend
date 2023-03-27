@@ -107,7 +107,7 @@ function MyDashboard() {
                   </div>
                   <main className="content ">
                     <Topbar />
-                    <div className='' style={{ marginTop: '90px' }}>
+                    <div className='container-fluid' style={{ marginTop: '90px' }}>
                       <Routes>
                         <Route exact path="/" element={<Dashboard />} />
                         <Route path="/users" element={<Home />} />
