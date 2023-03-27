@@ -102,7 +102,7 @@ export const loadSensorData = async (setSensorData) => {
 // load configuration settings of esp data
 export const loadEspConfigData = async () => {
   const res = await fetchApi("/getEspConfigData")
-  
+    // console.trace("getConfig: ")
     console.log("getEspConfigData: ");
     console.log(res);
     if(res){
@@ -178,6 +178,7 @@ export const loadTotalVolume=(values,setTotalVolume)=>{
   }
   if(!UTVolume) UTVolume= 1200
   if(!LTVolume) LTVolume= 1200
+  console.log("Volume:",UTVolume,LTVolume)
   setTotalVolume({UTTotalVolume:Math.round(UTVolume),LTTotalVolume:Math.round(LTVolume)})
 
 }

@@ -51,7 +51,7 @@ useEffect(() => {
 }, [])
 
   return (
-    <nav id='navbar' className="navbar fixed-top navbar-expand-lg bg-light" style={{ transition: 'top 0.3s' }}>
+    <nav id='navbar' className="navbar fixed-top navbar-expand-lg bg-light" style={{ transition: 'top 0.3s' ,zIndex:"8"}}>
     <div className="container-fluid">
         <NavLink onClick={collapseNav} className="navbar-brand" name='logo' to="/">
             {/* <img src={logoImg} alt="Logo" width="30" height="30" className="d-inline-block align-text-top" /> */}
