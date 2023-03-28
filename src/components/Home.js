@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import '../styles/Home.css'
 import Typed from 'typed.js'
 import MultipleFlipCard from './MultipleFlipCard'
 
@@ -28,7 +27,7 @@ const Home = () => {
         <div className="hero vh-100 d-flex align-items-center" id="home">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-7 mx-auto text-center">
+                        <div className="col-lg-7 mx-auto text-center mt-4">
                             <span className='h2 text-white sm-mt-3' ref={el} style={{fontSize: "40px"}}></span>
                             <p className="fs-5 text-white ">Tank Automation provides equitable water supply, reliability, completely visibility into your tanks, operate automatically, flexibility and it reduces the wastage of water</p>
                             <Link to="/contact" className="btn me-2 btn-primary">Contact Us </Link>
@@ -46,7 +45,7 @@ const Home = () => {
                             <h1>Meet Our Team Members</h1>
                         </div>
                     </div>
-                    <div className="row text-center g-4">
+                    <div className="row text-center d-flex justify-content-center">
                         <div className="col-lg-5 card col-md-5 me-2 ms-2">
                             <div className="team-member card-effect">
                                 <img src={require("../images/RajMishra.jpg")} alt="" />

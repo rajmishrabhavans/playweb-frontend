@@ -1,8 +1,8 @@
 import { showModalAlert, showSimpleAlert } from "../components/AlertMsg";
 import { getTankAlert, saveTankAlerts } from "../utility/admin";
-import { getHomeData, getSensorData, getSupplyList, loadEspConfigData, loadSensorData, updateHomeData, updateSensorData, updateSupplyDetails } from "../utility/espFucntion";
+import { getHomeData, getSensorData, getSupplyList, loadEspConfigData, loadSensorData, loadTotalVolume, updateHomeData, updateSensorData, updateSupplyDetails } from "../utility/espFucntion";
 import React, { createContext, useContext, useEffect, useReducer, useRef, useState } from 'react'
-import { AlertContext, EspContext } from "./MyDashboard";
+import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
     
     // supplyReducer for maintaining timer
     export const supplyReducer = (supplyInfo, action) => {
@@ -142,6 +142,7 @@ import { AlertContext, EspContext } from "./MyDashboard";
     
     export const Scheduler = ({children}) => {
         const {setAlerts}= useContext(AlertContext)
+        const {setTotalVolume}= useContext(TotalVolumeContext)
         const [timerMsg, setTimerMsg] = useState("");
         const {espData,setEspData} = useContext(EspContext);
         const [scheduleTime, setScheduleTime] = useState({startTime: '',stopAfter: '',});
@@ -161,6 +162,7 @@ import { AlertContext, EspContext } from "./MyDashboard";
             .then((data) => {
                 if (data) {
                     minUTvalue.current= data.udata.minFill;
+                    loadTotalVolume(data.udata,setTotalVolume)
                 }
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps

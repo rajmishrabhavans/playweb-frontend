@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 // import '../App.css'
 // import Footer from "./components/Footer";
 import Register from "../User Details/Register";
@@ -21,9 +21,9 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { adminInfo } from '../utility/appdata';
 import { loadAdminData } from '../utility/admin';
 import { TankAlerts } from './TankAlerts';
-import { fetchEspConfigData, loadTotalVolume } from '../utility/espFucntion';
+import { fetchEspConfigData } from '../utility/espFucntion';
 import Scheduler from './Scheduler';
-import { fetchApi } from '../utility/apiHelper';
+import { loggedInContext } from '../App';
 
 let initValue = {
   index: 0,
@@ -51,6 +51,7 @@ function MyDashboard() {
   const [sidebarOn, setSidebarStatus] = useState(false)
   const [usersdata, setUserdata] = useState([])
   const [totalVolume,setTotalVolume]= useState({UTTotalVolume:1200,LTTotalVolume:1200})
+  const {loggedIn}= useContext(loggedInContext)
 
   let loadcomp = useRef()
   useEffect(() => {
@@ -62,15 +63,9 @@ function MyDashboard() {
     //getting asmin info after the page is loaded
     if (!adminInfo.creationdate) {
       loadcomp.current.forEach((elem) => { elem.classList.add('placeholder'); })
-      fetchEspConfigData().then(async()=>{
-        const res = await fetchApi("/getEspConfigData")
-        
-        console.log("getEspConfigData: ");
-        console.log(res);
-        if(res){
-          loadTotalVolume(res.udata,setTotalVolume)
-        }
-      })
+      console.log("before fetch");
+      fetchEspConfigData()
+      
       loadAdminData()
         .then((data) => {
           if (data)
@@ -89,7 +84,7 @@ function MyDashboard() {
     }
     // console.log('about: ',about,'otherinfo ',otherinfo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [loggedIn])
   
 
   return (
