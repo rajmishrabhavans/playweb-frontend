@@ -38,7 +38,7 @@ function Sidebar() {
                 <div id="wrapper" style={{height:'100%'}} >
                     <div className={`${sidebarOn?'sidebar-bg':''}`} onClick={changeStyle}></div>
                     {/*  <!-- Sidebar --> */}
-                    <ul className="navbar-nav sidebar fixed_sidebar sidebar-dark sidebar-menu toggled" id="accordionSidebar">
+                    <ul className="navbar-nav sidebar fixed_sidebar sidebar-dark sidebar-menu" id="accordionSidebar">
 
                         {/*  <!-- Sidebar - Brand --> */}
                         <span className="sidebar-brand d-flex align-items-center justify-content-center">
@@ -140,7 +140,7 @@ function Sidebar() {
                         <hr className="sidebar-divider d-none d-md-block" />
 
                         {/*  <!-- Sidebar Message --> */}
-                        <div className="sidebar-card d-none d-lg-flex">
+                        <div className="sidebar-card d-none d-lg-flex" style={{backgroundColor: "#202350"}}>
                             <img className="sidebar-card-illustration mb-2" src={contactImg} alt="..." />
                             <p className="text-center mb-2">Having trouble in <br /><strong>Tank Automation</strong> <br />Please contact us</p>
                             <Link className="btn btn-success btn-sm" to="contactus">Help Center</Link>
