@@ -30,8 +30,8 @@ const ScheduleWater = () => {
         } else if (!stopAfter) {
             showSimpleAlert("Select stop time", 'red')
             return;
-        } else if (stopAfter > 1000 || stopAfter < 0) {
-            showSimpleAlert("Select proper stop time in range[0-1000]", 'red')
+        } else if (stopAfter > 200 || stopAfter <= 0) {
+            showSimpleAlert("Select proper stop time in range(0-200]", 'red')
             return;
         }
         let timeDiff = Number.parseInt((Date.parse(scheduleTime.startTime) - Date.now()) / 1000);
@@ -95,6 +95,7 @@ const ScheduleWater = () => {
 
     // check if user is authenticated to get data
     useEffect(() => {
+        document.getElementById("motorStartTime").min= new Date().toISOString().slice(0, 16)
         if (localStorage.getItem('loggedin')) {
             loadSupplyList({setSupplyList}).then((slist) => {
                 console.log(slist);

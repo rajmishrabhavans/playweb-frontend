@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { CardFill } from '../accessory/progressbar/FillProgress';
 import { OneProgressCard } from '../accessory/MiniCard';
 import { EspContext, LiveDataContext, TotalVolumeContext } from './MyDashboard';
+import { showSimpleAlert } from '../components/AlertMsg';
 
 const GetData = () => {
     const {espData,setEspData} = useContext(EspContext);
@@ -83,7 +84,7 @@ const GetData = () => {
                                         </div>
                                         <div className="col-auto me-3">
                                             <div className="container form-check form-switch form-check-reverse content-align-center mr-4">
-                                                <input className="ms-2 form-check-input" name="buildLed" onClick={(e) => { toggleCheckbox(e, espData, setEspData) }}
+                                                <input className="ms-2 form-check-input" name="buildLed" onClick={(e) => { liveData?toggleCheckbox(e, espData, setEspData):showSimpleAlert("Esp is Disconnected","red") }}
                                                     checked={espData.buildLed} type="checkbox" role="switch" id="buildLed" style={{ transform: "scale(2.4)" }} readOnly />
                                             </div>
                                         </div>
@@ -103,7 +104,7 @@ const GetData = () => {
                                         </div>
                                         <div className="col-auto me-3">
                                             <div className="container form-check form-switch form-check-reverse content-align-center mr-4">
-                                                <input className="ms-2 form-check-input" name="motorOn" onClick={(e) => { toggleCheckbox(e, espData, setEspData) }}
+                                                <input className="ms-2 form-check-input" name="motorOn" onClick={(e) => { liveData?toggleCheckbox(e, espData, setEspData):showSimpleAlert("Esp is Disconnected","red")  }}
                                                     checked={espData.motorOn} type="checkbox" role="switch" id="motorSwitch" style={{ transform: "scale(2.4)" }} readOnly />
                                             </div>
                                         </div>

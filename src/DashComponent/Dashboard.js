@@ -24,20 +24,23 @@ function usePrevious(value) {
     return ref; //in the end, return the current ref value.
 }
 const prevData = usePrevious(espData.index);
-const lastSupply= useRef("not filled")
+const lastSupply= useRef("not supplied")
 
   useEffect(() => {
-    
+    lastSupply.current= "loading..."
     let loadDataInterval;
     let repeatData = 0;
     getSupplyList2().then((data)=>{
       console.log(data)
       const isoDate= data.lastSupply
+      if(!isoDate) lastSupply.current="not supplied";
+      else{
       let sdate= new Date(isoDate);
       console.log(sdate);
       let ndate= moment(sdate).fromNow()
       console.log(ndate)
       lastSupply.current= ndate
+      }
     })
     if (localStorage.getItem('loggedin')) {
         console.log("started interval ");
@@ -86,7 +89,7 @@ const lastSupply= useRef("not filled")
     <div className="row mt-4">
         <OneTitleCard color= 'primary' title= 'Last Supplied' content= {lastSupply.current+''} icon= 'calendar'/>
         <OneTitleCard color= 'success' title= 'Next Scheduled' content= 'not scheduled' icon= 'hourglass-half'/>
-        <OneTitleCard color= 'warning' title= 'Upper tank filled' content= 'not filled' icon= 'fill'/>
+        <OneTitleCard color= 'warning' title= 'Upper tank filled' content= {espData.tankFull?'Tank Filled':'Not Filled'} icon= 'fill'/>
     </div>
        {/* <div className="border-bottom-primary shadow mb-4" style={{opacity:'0.6'}}></div> */}
 
