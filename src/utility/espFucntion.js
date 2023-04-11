@@ -146,8 +146,8 @@ export const fetchEspConfigData = async () => {
   // use token or session if login then only fetchApi should work
   const res = await fetchApi("/fetchEspConfigData")
   
-    console.log("EspConfigData: ");
-    console.log(res.msg);
+    // console.log("EspConfigData: ");
+    // console.log(res.msg);
     if(res){
       loadProgBar();
       return res.msg;

@@ -61,9 +61,11 @@ const Configure = () => {
     })
 
 
-    const detectDepth = async (tank) => {
+    const detectDepth = async (tank,elem) => {
 
         setEspConfigData({ checkDepth: true });
+        elem.target.innerHTML= "loading..."
+        // console.log(elem);
         setTimeout(() => {
             getTankInfo().then((data) => {
                 // console.log(data);
@@ -71,8 +73,11 @@ const Configure = () => {
                     setFieldValue('UTDepth', data.UTDepth);
                 if (tank === 'lower')
                     setFieldValue('LTDepth', data.LTDepth);
+            })
+            .finally(()=>{
+                elem.target.innerHTML= "Detect Depth"
             });
-        }, 2200);
+        }, 1200);
     }
 
     // console.log(values);
@@ -126,7 +131,7 @@ const Configure = () => {
 
 
                                 <div className="mb-3 d-flex justify-content-center">
-                                    <button type="button" onClick={() => detectDepth('upper')} className="btn btn-primary ">Detect depth</button>
+                                    <button type="button" onClick={(e) => detectDepth('upper',e)} className="btn btn-primary ">Detect depth</button>
                                 </div>
 
                                 <div className="placeholder-glow d-flex flex-column">
@@ -136,10 +141,10 @@ const Configure = () => {
                                         <div className="mb-1" onBlur={handleBlur} onChange={handleChange} value={values.UTShape}>
                                             <input className="" type="radio" name="UTShape"
                                                 id="frustum" value="frustum" defaultChecked />
-                                            <label className="ps-1" htmlFor="frustum"> 🪣 Frustum</label>
+                                            <label className="ps-1" htmlFor="frustum"> <i class="fas fa-glass-whiskey"></i> Frustum</label>
                                             <input className="ms-3" type="radio" name="UTShape"
                                                 id="cuboid" value="cuboid" />
-                                            <label className="ps-1" htmlFor="cuboid">📦 Cuboid</label>
+                                            <label className="ps-1" htmlFor="cuboid"><i className="fas fa-cube"></i> Cuboid</label>
                                         </div>
                                         <p className='ms-4 mt-1 mb-1 text-danger' >{errors.UTShape && touched.UTShape ? errors.UTShape : ""}</p>
                                     </div>
@@ -195,7 +200,7 @@ const Configure = () => {
                                 <p className='ms-4 mt-1 mb-1 text-danger' >{errors.LTDepth && touched.LTDepth ? errors.LTDepth : ""}</p>
 
                                 <div className="mb-3 d-flex justify-content-center">
-                                    <button type="button" onClick={() => detectDepth('lower')} className="btn btn-primary ">Detect depth</button>
+                                    <button type="button" onClick={(e) => detectDepth('lower',e)} className="btn btn-primary ">Detect depth</button>
                                 </div>
 
 
@@ -206,10 +211,10 @@ const Configure = () => {
                                         <div className="mb-1" onBlur={handleBlur} onChange={handleChange} value={values.LTShape}>
                                             <input className="" type="radio" name="LTShape"
                                                 id="frustum2" value="frustum" defaultChecked />
-                                            <label className="ps-1" htmlFor="frustum2"> 🪣 Frustum</label>
+                                            <label className="ps-1" htmlFor="frustum2"> <i class="fas fa-glass-whiskey"></i> Frustum</label>
                                             <input className="ms-3" type="radio" name="LTShape"
                                                 id="cuboid2" value="cuboid" />
-                                            <label className="ps-1" htmlFor="cuboid2">📦 Cuboid</label>
+                                            <label className="ps-1" htmlFor="cuboid2"> <i className="fas fa-cube"></i> Cuboid</label>
                                         </div>
                                         <p className='ms-4 mt-1 mb-1 text-danger' >{errors.LTShape && touched.LTShape ? errors.LTShape : ""}</p>
 

@@ -64,7 +64,7 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
                 roomList.push({ ...slist[i], supplyOn: slist[i].status === 'active', supplyStatus: 0, waterPassed: 0 });
             }
         }
-        console.log(roomList);
+        // console.log(roomList);
         if (roomList) {
             setSupplyList(roomList)
         }
@@ -154,7 +154,7 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
             { room: 2, name: 'Room2', supplyOn: false, supplyStatus: 0, waterPassed: 0 },
         ]);
         // const [motorOn,setMotorOn]= useState(false);
-        const [supplyInfo, setSupplyInfo] = useReducer(supplyReducer, { startAfter: 0, remainTime: 0, remainQuantity: 0, remainRoom: 0, timerOn: false, supplyType: 'T' });
+        const [supplyInfo, setSupplyInfo] = useReducer(supplyReducer, { startAfter: -1, remainTime: -1, remainQuantity: -1, remainRoom: 0, timerOn: false, supplyType: 'T' });
         let minUTvalue = useRef(11);
         useEffect(() => {
             loadSensorData(setEspData);
@@ -168,6 +168,8 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
         // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
         
+        let currVol= useRef(undefined);
+        let UTFilled= useRef(false);
         useEffect(() => {
             let intervalId;
             // console.log(supplyInfo.remainTime, supplyInfo.remainRoom);
@@ -179,11 +181,32 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
                     // console.log("Both water tanks are empty!");
                     stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
                     showModalAlert("Both water tanks are empty!");
+                    return;
                 }
-                if(minUTvalue.current>=espData.upperTank && espData.lowerTank>=10){
-                    updateSensorData({ motorOn: true });
-                }else if(espData.lowerTank<10){
+                const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
+                console.log("volume filled",currVol.current);
+                console.log("Current filled:",espData.UTVolume);
+                console.log("current Room:",currentRoom);
+                if((minUTvalue.current>=espData.upperTank && espData.lowerTank>=10) || espData.motorOn){
+                    if(!espData.motorOn){
+                        updateSensorData({ motorOn: true });
+                        UTFilled.current=true;
+                        updateHomeData({ roomNo: currentRoom.room, supplyOn: false });
+                    }
+                    setTimerMsg(`Upper tank is filling, currently filled ${espData.upperTank}%`)
+                    setTimeout(()=>{
+                        setSupplyInfo({ type: "setStartAfter",value:supplyInfo.startAfter });
+                    },1000)
+                    return;
+
+                }else if(UTFilled.current){
                     updateSensorData({ motorOn: false });
+                    if(currVol.current){
+                        console.log(currVol);
+                        if(currentRoom)
+                        updateHomeData({ roomNo: currentRoom.room, supplyOn: true });
+                        setWaterVolume({ ...waterVolume, currUTVolume: espData.UTVolume, preUTVolume: espData.UTVolume- currVol.current})
+                    }
                 }
             }
             if(!(supplyInfo.remainQuantity>=0 || supplyInfo.remainTime>=0 || supplyInfo.remainRoom>=0)){
@@ -205,7 +228,7 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
             //countdown of timer before supplying
             if (supplyInfo.startAfter >= 0 && supplyInfo.timerOn) {
                 if (supplyInfo.remainTime >= 0 || supplyInfo.remainQuantity >= 0) {
-                    setTimerMsg(`Motor will start in ${formattedTime(supplyInfo.startAfter)}`)
+                    setTimerMsg(`Motor will start in ${formattedTime(supplyInfo.startAfter)} by ${supplyBy}`)
                     intervalId = setInterval(() => {
                         setSupplyInfo({ type: "decStartAfter" });
                         // console.log(supplyInfo.startAfter);
@@ -289,7 +312,7 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
                     setWaterVolume({ ...waterVolume, currUTVolume: data.UTVolume, currLTVolume: data.LTVolume })
                 })
                 updateWaterPassed({supplyList,setSupplyList});
-                let passedVolume = waterVolume.prevUTVolume - waterVolume.currUTVolume;
+                currVol.current = waterVolume.prevUTVolume - waterVolume.currUTVolume;
                 if (currentRoom) {
                     getHomeData().then((rdata) => {
                         rdata.find((item) => {
@@ -305,7 +328,7 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
                         currentRoom.supplyStatus = 1;
                         updateHomeData({ roomNo: currentRoom.room, supplyOn: true });
                     }
-                    setTimerMsg(`${passedVolume} ml water passed from ${supplyInfo.remainQuantity}, current room(${currentRoom.room}), remaining rooms: ${supplyInfo.remainRoom - 1}
+                    setTimerMsg(`${currVol.current} ml water passed from ${supplyInfo.remainQuantity}, current room(${currentRoom.room}), remaining rooms: ${supplyInfo.remainRoom - 1}
                     CurrentVolume ${waterVolume.currUTVolume}, Prev Volume ${waterVolume.prevUTVolume}`)
                 }
                 intervalId = setInterval(() => {
@@ -328,16 +351,16 @@ import { AlertContext, EspContext, TotalVolumeContext } from "./MyDashboard";
                         }, 500);
     
                         //if the flowsensor shows less than 50% water has passed but tank water is reduced more than given amount
-                        if (passedVolume >= supplyInfo.remainQuantity && waterPass.waterPassed < scheduleTime.stopAfter * 0.5) {
+                        if (currVol.current >= supplyInfo.remainQuantity && waterPass.waterPassed < scheduleTime.stopAfter * 0.5) {
                             getSensorData().then((data) => {
                                 setWaterVolume({ currUTVolume: data.UTVolume, currLTVolume: data.LTVolume, prevUTVolume: data.UTVolume - waterPass.waterPassed, prevLTVolume: data.LTVolume })
                             })
                             console.log("Stopped");
                         }
                         //if the flowsensor is showing 90% water has passed or the tank is showing given amount is reduced
-                        else if (passedVolume >= supplyInfo.remainQuantity || waterPass.waterPassed + 2 * homeData.flowSpeed >= scheduleTime.stopAfter * 0.9) {
+                        else if (currVol.current >= supplyInfo.remainQuantity || waterPass.waterPassed + 2 * homeData.flowSpeed >= scheduleTime.stopAfter * 0.9) {
                             console.log(`Water Passed for room:${currentRoom.room}(fs): ${waterPass.waterPassed}+${2 * homeData.flowSpeed}`);
-                            console.log(`Water Passed for room:${currentRoom.room}(tank based): ${passedVolume}`);
+                            console.log(`Water Passed for room:${currentRoom.room}(tank based): ${currVol.current}`);
                             setSupplyInfo({ type: "decRemainRoom" });
                             updateHomeData({ roomNo: currentRoom.room, supplyOn: false });
                             supplyList[supplyList.length - supplyInfo.remainRoom].supplyStatus = 2;

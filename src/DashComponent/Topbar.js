@@ -47,15 +47,15 @@ const Topbar = (status) => {
     }
     
     useEffect(() => {
-        console.log(alerts);
+        // console.log(alerts);
         // alertsCount = alerts ? alerts.alertsMsg.length-alerts.markRead : -1;
         // console.log(alerts.alertsMsg.length,alerts.markRead,alertsCount);
         loadAlerts();
         getTankAlert()
-        .then((data)=>{console.log('alert data:',data);
+        .then((data)=>{
+            // console.log('alert data:',data);
             if(data && data.alerts){
             setAlerts({alertsMsg:data.alerts.reverse(),markRead:data.read});
-            console.log(data.alerts);
             }
         }).catch(e=>console.log(e))
         

@@ -63,7 +63,7 @@ function MyDashboard() {
     //getting asmin info after the page is loaded
     if (!adminInfo.creationdate) {
       loadcomp.current.forEach((elem) => { elem.classList.add('placeholder'); })
-      console.log("before fetch");
+      // console.log("before fetch");
       fetchEspConfigData()
       
       loadAdminData()
