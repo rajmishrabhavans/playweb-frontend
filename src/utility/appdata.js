@@ -1,7 +1,8 @@
 const appdata = {
     // baseUrl: "https://playwebbackend.onrender.com",
-    baseUrl: "http://localhost:8000",
-    // baseUrl: "http://192.168.43.14:8000"
+    // baseUrl: "http://localhost:8000",
+    // baseUrl: "http://192.168.43.14:8000",
+    baseUrl: "https://playweb-service.wl.r.appspot.com"
 }
 export const adminInfo = {
     _id:"295179",
@@ -19,7 +20,7 @@ export const UserDetails= []
 
 export const fetchInfo= {
     fetchTry:0,
-    maxRetry:5,
+    maxRetry:8,
     interval:1100,
 }
 
