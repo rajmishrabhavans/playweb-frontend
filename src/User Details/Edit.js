@@ -23,7 +23,7 @@ const Edit = () => {
   }
 
   const { id } = useParams("");
-  console.log(id-1);
+  // console.log(id-1);
    
   let slist
   
@@ -46,7 +46,12 @@ const Edit = () => {
     slist[id-1] = values
     console.log(slist)
     const saved = await saveSupplyList(slist);
-    if(saved) showSimpleAlert("List Updated Successfully")
+    if(saved){
+      setUserdata(slist)
+      showSimpleAlert("List Updated Successfully")
+    }else{
+      showSimpleAlert("Failed to update")
+    }
     navigate('/users')
   }
 
@@ -61,7 +66,7 @@ const Edit = () => {
     }
     const result = slist[id-1];
     let errors = {};
-    console.log(values);
+    // console.log(values);
     if (slist.filter(function (e) { return e.room === values.room && values.room!==result.room; }).length > 0) {
     errors.room = "room exists"
     }
@@ -138,7 +143,7 @@ const Edit = () => {
             <div className="mb-3 col-lg-6 col-md-6 col-12">
                 <label htmlFor="exampleInputPassword1" className="form-label">Ownership</label>
                 <select className="form-select" aria-label="Default select example" name='ownership' value={values.ownership} onBlur={handleBlur} onChange={handleChange}>
-                    <option value="" disabled selected hidden>Please Select...</option>
+                    <option value="" disabled hidden>Please Select...</option>
                     <option value="1">Owner</option>
                     <option value="2">Tenant</option>
                 </select>

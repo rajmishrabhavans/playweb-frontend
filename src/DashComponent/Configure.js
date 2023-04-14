@@ -69,6 +69,10 @@ const Configure = () => {
         setTimeout(() => {
             getTankInfo().then((data) => {
                 // console.log(data);
+                if(!data.UTDepth){
+                    showSimpleAlert("Unable to fetch depth!",'red');
+                    return;
+                }
                 if (tank === 'upper')
                     setFieldValue('UTDepth', data.UTDepth);
                 if (tank === 'lower')

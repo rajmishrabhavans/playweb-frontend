@@ -71,13 +71,15 @@ const Register = () => {
     let roomlist = usersdata;
     if (type === "addListItem") {
       roomlist.push(value);
-      setUserdata(roomlist);
 
     //   console.log(setUdata);
       const saved = await saveSupplyList(usersdata);
       if(saved) {
+        setUserdata(roomlist);
         showSimpleAlert("List Updated Successfully")
         navigate("/users")
+      }else{
+        showSimpleAlert("Failed to update!")
       }
     }
   }

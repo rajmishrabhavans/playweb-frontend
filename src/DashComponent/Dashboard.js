@@ -81,9 +81,9 @@ const lastSupply= useRef("not supplied")
       {/*  <!-- Page Heading --> */}
       <div className="d-sm-flex align-items-center justify-content-between">
         <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
-          <p className='text-center text-warning'>{!liveData ? "This may be some old data" : ""}</p>
-        <a href="/" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i className="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+          <p className='text-center w-100 text-warning'>{!liveData ? "This may be some old data" : ""}</p>
+        <a href="/" className=" btn btn-sm btn-primary shadow-sm" style={{display:'none'}}>
+            <i className="fas fa-download fa-sm text-white-50" ></i> Generate Report</a>
         </div>
 
     <div className="row mt-4">

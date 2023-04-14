@@ -20,7 +20,7 @@ export const UserDetails= []
 
 export const fetchInfo= {
     fetchTry:0,
-    maxRetry:8,
+    maxRetry:5,
     interval:1100,
 }
 
