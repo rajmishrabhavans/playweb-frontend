@@ -1,8 +1,8 @@
 const appdata = {
     // baseUrl: "https://playwebbackend.onrender.com",
-    // baseUrl: "http://localhost:8000",
+    baseUrl: "http://localhost:8000",
     // baseUrl: "http://192.168.43.14:8000",
-    baseUrl: "https://playweb-service.wl.r.appspot.com"
+    // baseUrl: "https://playweb-service.wl.r.appspot.com"
 }
 export const adminInfo = {
     _id:"295179",

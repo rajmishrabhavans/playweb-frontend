@@ -3,33 +3,33 @@ import { fetchApi } from "./apiHelper";
 import appdata from "./appdata";
 
 // loads the progress bar that shows upper and lower waterlevel
-export async function loadProgBar() {
-  const circles = document.querySelectorAll('.circle');
-  circles.forEach(elem => {
-    var dots = elem.getAttribute('data-dots')
-    var marked = elem.getAttribute('data-percent');
-    // console.log(marked);
-    var percent = Math.floor(dots * marked / 100);
-    var rotate = 360 / dots;
-    var points = "";
-    for (let i = 0; i < dots; i++) {
-      points += `<div class="points" style="--i: ${i}; --rot: ${rotate}deg"></div>`;
-    }
-    elem.innerHTML = points;
-    const pointsMarked = elem.querySelectorAll('.points');
+// export async function loadProgBar() {
+//   const circles = document.querySelectorAll('.circle');
+//   circles.forEach(elem => {
+//     var dots = elem.getAttribute('data-dots')
+//     var marked = elem.getAttribute('data-percent');
+//     // console.log(marked);
+//     var percent = Math.floor(dots * marked / 100);
+//     var rotate = 360 / dots;
+//     var points = "";
+//     for (let i = 0; i < dots; i++) {
+//       points += `<div class="points" style="--i: ${i}; --rot: ${rotate}deg"></div>`;
+//     }
+//     elem.innerHTML = points;
+//     const pointsMarked = elem.querySelectorAll('.points');
 
-    for (let i = 0; i < percent; i++) {
-      const list = pointsMarked[i].classList;
-      if (marked >= 95) {
-        list.remove('marked');
-        list.add('markedr');
-      } else {
-        list.remove('markedr');
-        list.add('marked');
-      }
-    }
-  })
-}
+//     for (let i = 0; i < percent; i++) {
+//       const list = pointsMarked[i].classList;
+//       if (marked >= 95) {
+//         list.remove('marked');
+//         list.add('markedr');
+//       } else {
+//         list.remove('markedr');
+//         list.add('marked');
+//       }
+//     }
+//   })
+// }
 
 // updates the esp pin value when togglebox is clicked
 export async function toggleCheckbox(element, sensorData, setSensorData) {
@@ -53,6 +53,8 @@ export async function toggleCheckbox(element, sensorData, setSensorData) {
       updateSensorData({ motorOn: false });
     }
   }
+
+
 };
 
 // updates the sensor data by the given values
@@ -92,7 +94,7 @@ export const loadSensorData = async (setSensorData) => {
     // console.log(res);
     if(res){
       setSensorData(res);
-      loadProgBar();
+      // loadProgBar();
       return res;
     }
     return false;
@@ -149,7 +151,7 @@ export const fetchEspConfigData = async () => {
     // console.log("EspConfigData: ");
     // console.log(res.msg);
     if(res){
-      loadProgBar();
+      // loadProgBar();
       return res.msg;
     }
     return false;
@@ -222,7 +224,7 @@ export const getSupplyList = async () => {
     console.log("supplyList: ");
     console.log(res);
     if(res.supplyList){
-      loadProgBar();
+      // loadProgBar();
       return res.supplyList.roomList;
     }else{
       return false;
@@ -237,7 +239,7 @@ export const getSupplyList2 = async () => {
     // console.log("supplyList: ");
     // console.log(res);
     if(res.supplyList){
-      loadProgBar();
+      // loadProgBar();
       return res.supplyList;
     }else{
       return false;
@@ -265,7 +267,7 @@ export const getHomeData = async () => {
     // console.log("roomData: ");
     // console.log(res.data.roomData);
     if(res){
-      loadProgBar();
+      // loadProgBar();
       return res.data.roomData;
     }
     return false;

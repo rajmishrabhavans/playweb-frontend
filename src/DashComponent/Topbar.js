@@ -4,16 +4,27 @@ import { useNavigate, Link } from 'react-router-dom'
 import appdata from '../utility/appdata';
 import moment from 'moment';
 import { getTankAlert, logoutAdmin } from '../utility/admin'
-import { useContext, useEffect } from 'react';
-import { AdminContext, AlertContext, LiveDataContext, SidebarContext } from './MyDashboard';
+import { useContext, useEffect, useRef } from 'react';
+import { AdminContext, AlertContext, EspContext, LiveDataContext, SidebarContext } from './MyDashboard';
 import { loggedInContext } from '../App';
+import { loadSensorData } from '../utility/espFucntion';
 
 const Topbar = (status) => {
     const{setLoggedIn}= useContext(loggedInContext)
-    const {liveData} = useContext(LiveDataContext);
+    const {liveData,setLiveData} = useContext(LiveDataContext);
     const { adminData } = useContext(AdminContext)
-    const navigate = useNavigate({});
     const {alerts,setAlerts}= useContext(AlertContext)
+    const { espData, setEspData } = useContext(EspContext);
+    const navigate = useNavigate({});
+
+    function usePrevious(value) {
+      const ref = useRef();
+      useEffect(() => {
+        ref.current = value; //assign the value of ref to the argument
+      }, [value]); //this code will run when the value of 'value' changes
+      return ref; //in the end, return the current ref value.
+    }
+    const prevData = usePrevious(espData.index);
 
     const {setSidebarStatus}= useContext(SidebarContext)
     const changeStyle = () => {
@@ -45,12 +56,34 @@ const Topbar = (status) => {
         });
         showModalAlert("Are you sure you want to exit?", 'Confirm')
     }
+
+    const checkLive= async()=>{
+        let repeatData = 0;
+        const loadDataInterval = setInterval(() => {
+            loadSensorData(setEspData).then((sent) => {
+              // console.log(fetchInfo.fetchTry,fetchInfo.interval,sent);
+              if (sent.index === prevData.current) {
+                repeatData++;
+                if (repeatData >= 3) {
+                  setLiveData(false)
+                  clearInterval(loadDataInterval);
+                }
+              } else {
+                repeatData = 0;
+                setLiveData(true)
+                clearInterval(loadDataInterval);
+              }
+              console.log(sent.index, prevData.current, repeatData, liveData);
+            })
+          }, 2000);
+    }
     
     useEffect(() => {
         // console.log(alerts);
         // alertsCount = alerts ? alerts.alertsMsg.length-alerts.markRead : -1;
         // console.log(alerts.alertsMsg.length,alerts.markRead,alertsCount);
         loadAlerts();
+        checkLive()
         getTankAlert()
         .then((data)=>{
             // console.log('alert data:',data);
@@ -114,7 +147,7 @@ const Topbar = (status) => {
 
                         <div className="topbar-divider mx-2 mx-sm-3 d-sm-block"></div>
 
-                        <div className='live-logo'> 
+                        <div className='live-logo' onClick={checkLive}> 
                         {liveData?
                         <>
                         <i className="fas fa-wifi mt-4"></i>

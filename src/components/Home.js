@@ -8,7 +8,7 @@ const Home = () => {
 
     useEffect(() => {
         const typed = new Typed(el.current, {
-            strings: ['Hello there !', 'Welcome to Tank Automation.', 'Want to Automate your Water Tank? ^3000'],
+            strings: ['Hello there !', 'Welcome to Tank Automation', 'Want to Automate your Water Tank? ^3000'],
             typeSpeed: 130,
             // backSpeed: 100,
             smartBackspace: true, // Default value
