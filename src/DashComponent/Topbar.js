@@ -116,7 +116,8 @@ const Topbar = (status) => {
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i className="fas fa-bell fa-fw"></i>
                                 {/*  <!-- Counter - Alerts --> */}
-                                <span className={`badge badge-danger badge-counter ${(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)<=0?'d-none':''}`}>{alerts ? alerts.alertsMsg.length-alerts.markRead : -1}</span>
+                                {/* {console.log(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)} */}
+                                <span className={`badge text-bg-danger translate-middle ${(alerts ? alerts.alertsMsg.length-alerts.markRead : -1)<=0?'d-none':''}`}>{alerts ? alerts.alertsMsg.length-alerts.markRead : -1}</span>
                             </a>
                             {/*   <!-- Dropdown - Alerts --> */}
                             <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"

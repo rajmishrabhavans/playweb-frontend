@@ -177,6 +177,7 @@ export const Scheduler = ({ children }) => {
         if ((supplyInfo.remainQuantity >= 0 || supplyInfo.remainTime >= 0) && supplyInfo.timerOn && supplyInfo.startAfter < 0) {
             loadSensorData(setEspData);
             // console.log("Tank Percent:",espData.upperTank,minUTvalue,espData.upperTank<=minUTvalue.current);
+            // If both tanks are empty
             if (espData.lowerTank <= 10 && espData.upperTank <= minUTvalue.current) {
                 // console.log("Both water tanks are empty!");
                 stopTimer({ setSupplyInfo, supplyInfo, setTimerMsg, homeData, setHomeData, supplyList, setSupplyList });
@@ -187,11 +188,12 @@ export const Scheduler = ({ children }) => {
             console.log("volume filled", currVol.current);
             console.log("Current filled:", espData.UTVolume);
             console.log("current Room:", currentRoom);
+            // If upperTank is empty but lower tank has water > 10%
             if ((minUTvalue.current >= espData.upperTank && espData.lowerTank >= 10) || espData.motorOn) {
                 if (!espData.motorOn) {
                     updateSensorData({ motorOn: true });
                     UTFilled.current = true;
-                    updateHomeData({ roomNo: currentRoom.room, supplyOn: false });
+                    updateHomeData({ roomNo: currentRoom?currentRoom.room:1, supplyOn: false });
                 }
                 setTimerMsg(`Upper tank is filling, currently filled ${espData.upperTank}%`)
                 setTimeout(() => {
@@ -209,6 +211,7 @@ export const Scheduler = ({ children }) => {
                 }
             }
         }
+        // save alerts
         if (!(supplyInfo.remainQuantity >= 0 || supplyInfo.remainTime >= 0 || supplyInfo.remainRoom >= 0)) {
             console.log(supplyInfo);
             const timeStamp = new Date().toISOString()
@@ -239,7 +242,7 @@ export const Scheduler = ({ children }) => {
                             if (supplyBy === 'quantity') {
                                 getSensorData().then((data) => {
                                     setWaterVolume({ currUTVolume: data.UTVolume, currLTVolume: data.LTVolume, prevUTVolume: data.UTVolume, prevLTVolume: data.LTVolume });
-                                    if (!(data.currUTVolume >= 0 && data.currUTVolume <= 1400)) {
+                                    if (!(data.UTVolume >= 0 && data.UTVolume <= 1300)) {
                                         getSensorData().then((data) => {
                                             setWaterVolume({ currUTVolume: data.UTVolume, currLTVolume: data.LTVolume, prevUTVolume: data.UTVolume, prevLTVolume: data.LTVolume })
                                         });
@@ -252,7 +255,8 @@ export const Scheduler = ({ children }) => {
                     }
                 }, 1000);
             }
-            //while suplying the water
+         
+        //while suplying the water by time
         } else if (supplyInfo.remainTime >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
 
             const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
@@ -305,6 +309,8 @@ export const Scheduler = ({ children }) => {
                     stopTimer({ setSupplyInfo, supplyInfo, setTimerMsg, homeData, setHomeData, supplyList, setSupplyList });
                 }
             }, 1000);
+            
+        //while suplying the water by quantity
         } else if (supplyInfo.remainQuantity >= 0 && supplyInfo.remainRoom >= 0 && supplyInfo.timerOn) {
             const currentRoom = supplyList[supplyList.length - supplyInfo.remainRoom];
 

@@ -85,7 +85,7 @@ const ScheduleWater = () => {
                 <td className="text-start">{name}</td>
                 <td className="text-center">{wing}/{room}</td>
                 <td className="text-center">
-                    <div className={`badge badge-${color}`}>{status}</div>
+                    <div className={`badge bg-${color}`}>{status}</div>
                 </td>
                 <td className="text-center ">{supplyStatus === 1?homeData.flowSpeed:0} ml/s</td>
                 <td className="text-center ">{supplyStatus === 1?homeData.waterPassed:waterPassed} ml</td>
