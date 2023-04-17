@@ -332,7 +332,7 @@ export const Scheduler = ({ children }) => {
                 });
                 if (currentRoom.supplyStatus === 0) {
                     currentRoom.supplyStatus = 1;
-                    updateHomeData({ roomNo: currentRoom.room, supplyOn: true });
+                    updateHomeData({ roomNo: currentRoom.room, supplyOn: true, resetFlow: true });
                 }
                 setTimerMsg(`${currVol.current} ml water passed from ${supplyInfo.remainQuantity}, current room(${currentRoom.room}), remaining rooms: ${supplyInfo.remainRoom - 1}
                     CurrentVolume ${waterVolume.currUTVolume}, Prev Volume ${waterVolume.prevUTVolume}`)
