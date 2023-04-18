@@ -15,7 +15,7 @@ const Register = () => {
     const checkRoom = async (values) => {
         let errors = {};
         console.log(values);
-        if (usersdata.filter(function (e) { return e.room === values.room; }).length > 0) {
+        if (usersdata.filter(function (e) { return e.room === values.room && e.wing === values.wing; }).length > 0) {
         errors.room = "room exists"
         }
         return errors;

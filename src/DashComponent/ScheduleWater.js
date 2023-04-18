@@ -5,6 +5,7 @@ import { TimeInputProvider,HomeDataProvider,SupplyListProvider,SupplyInfoProvide
 import { getSensorData, updateHomeData } from '../utility/espFucntion';
 import { useNavigate } from 'react-router-dom';
 import { showSimpleAlert } from '../components/AlertMsg';
+import { LiveDataContext } from './MyDashboard';
 // import { AlertContext } from './MyDashboard';
 
 const ScheduleWater = () => {
@@ -16,11 +17,16 @@ const ScheduleWater = () => {
     const {supplyList,setSupplyList}= useContext(SupplyListProvider)
     const {supplyInfo,setSupplyInfo}= useContext(SupplyInfoProvider)
     const {timerMsg,setTimerMsg}= useContext(TimerMsgProvider)
+    const { liveData } = useContext(LiveDataContext);
 
 
     
     // start timer when time is scheduled and confirmed
     const startTimer = () => {
+        if(!liveData) {
+            showSimpleAlert("Esp is disconnected","red")
+            return;
+        }
         if (supplyInfo.timerOn) stopTimer({setSupplyInfo,supplyInfo,setTimerMsg,homeData,setHomeData,supplyList,setSupplyList});
         const { startTime, stopAfter } = scheduleTime;
         // console.log(startTime,stopAfter);

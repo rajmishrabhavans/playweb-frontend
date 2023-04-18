@@ -67,7 +67,7 @@ const Edit = () => {
     const result = slist[id-1];
     let errors = {};
     // console.log(values);
-    if (slist.filter(function (e) { return e.room === values.room && values.room!==result.room; }).length > 0) {
+    if (slist.filter(function (e) { return e.room === values.room && e.wing === values.wing && values.room!==result.room }).length > 0) {
     errors.room = "room exists"
     }
     return errors;
